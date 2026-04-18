@@ -322,15 +322,24 @@ app.post('/api/analizar-imagen', upload.single('imagen'), async (req, res) => {
     const b64 = file.buffer.toString('base64');
     const mediaType = file.mimetype;
 
-    const prompt = `Sos asistente de carpintería de aluminio. Analizá la imagen y devolvé SOLO un JSON array sin texto extra.
+    // MEJORA: prompt optimizado para escritura manuscrita de carpintero argentino
+    const prompt = `Sos asistente técnico de carpintería de aluminio argentina. Estás leyendo una lista ESCRITA A MANO por un carpintero argentino.
+
+INSTRUCCIONES PARA LECTURA MANUSCRITA:
+- La escritura puede ser poco clara, con letras y números similares entre sí
+- Confusiones frecuentes: 0/6, 1/7, 3/8, 4/9, B/8, Z/2
+- Los códigos Módena empiezan con 6 (ej: 6200, 6201, 6207) — si ves un número de 4 dígitos que empieza con "6", es casi seguro línea Módena
+- Los códigos Herrero son números cortos (17, 39, 100, 101, 102, 103, 104...)
+- Las cantidades pueden estar escritas como: "x3", "3u", "3 barras", "- 3", o simplemente un número al lado del código
+- Si un código es ambiguo, elegí el más lógico según la línea default y anotalo en "nota"
+- Extraé TODOS los códigos y cantidades visibles, aunque la escritura sea difícil
 
 CATÁLOGO:${CATALOGO}
 
-Formato requerido:
-[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto","descripcion":"descripción","barras":1,"color":"${colorDefault}","lista":"${listaDefault}","reconocido":true,"nota":""}]
+Formato requerido — devolvé SOLO este JSON array, sin texto extra:
+[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto del catálogo","descripcion":"descripción","barras":1,"color":"${colorDefault}","lista":"${listaDefault}","reconocido":true,"nota":"explicá si hubo duda de lectura"}]
 
-Defaults: linea=${lineaDefault}, color=${colorDefault}, lista=${listaDefault}.
-Extraé todos los códigos y cantidades visibles en la imagen.`;
+Defaults: linea=${lineaDefault}, color=${colorDefault}, lista=${listaDefault}.`;
 
     const message = await client.messages.create({
       model: 'claude-sonnet-4-5',
