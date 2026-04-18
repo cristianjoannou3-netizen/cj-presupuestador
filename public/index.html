@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CJ Metales – Presupuestador</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:system-ui,sans-serif;background:#f0f4f1;color:#1a2d20;min-height:100vh;padding-bottom:60px}
+header{background:linear-gradient(135deg,#0d1f14,#1a6b3a,#1b8c7a);padding:14px 20px;display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.logo{font-weight:700;font-size:1.5rem;color:#fff;letter-spacing:2px;line-height:1}
+.logo-sub{font-size:.65rem;color:rgba(255,255,255,.45);letter-spacing:3px}
+.sep{width:1px;height:28px;background:rgba(255,255,255,.2)}
+.titulo{font-size:13px;color:rgba(255,255,255,.8)}
+.app{max-width:960px;margin:0 auto;padding:0 10px}
+.card{background:#fff;border-radius:10px;box-shadow:0 3px 18px rgba(13,31,20,.09);margin-bottom:14px;border:1px solid #c8dace;overflow:hidden}
+.card-h{background:linear-gradient(90deg,#1a6b3a,#2d8f52);color:#fff;padding:10px 16px;font-weight:700;font-size:.88rem;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.badge{background:rgba(255,255,255,.2);border-radius:20px;font-size:.7rem;padding:2px 9px}
+.card-b{padding:14px 16px}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
+.fg{display:flex;flex-direction:column;gap:3px}
+label{font-size:11px;font-weight:600;color:#6a8a72;letter-spacing:.5px;text-transform:uppercase}
+input,select,textarea{border:1px solid #c8dace;border-radius:6px;padding:7px 10px;font-family:inherit;font-size:.88rem;color:#1a2d20;background:#e8f5ec;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:#1a6b3a;background:#fff}
+.btn{background:#1a6b3a;color:#fff;border:none;border-radius:6px;padding:8px 14px;font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer}
+.btn:hover{background:#2d8f52}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn-g{background:#f0f4f1;color:#1a2d20;border:1px solid #c8dace}
+.btn-g:hover{background:#e0f0e6}
+.tab-btn{font-size:12px;padding:5px 12px;border-radius:6px;border:1px solid #c8dace;background:#f0f4f1;color:#1a2d20;cursor:pointer;font-family:inherit}
+.tab-btn.active{background:#1a6b3a;color:#fff;border-color:#1a6b3a}
+table{width:100%;border-collapse:collapse;font-size:.8rem}
+thead tr{background:#1a6b3a;color:#fff}
+th{padding:7px 6px;text-align:left;font-size:11px;font-weight:600;white-space:nowrap}
+tbody tr{border-bottom:1px solid #c8dace}
+tbody tr:nth-child(even){background:#f7fbf8}
+tbody tr:hover{background:#e8f5ec}
+td{padding:6px}
+.cod{font-weight:700;color:#1a6b3a}
+.mut{color:#6a8a72;font-size:11px}
+.sub-val{font-weight:600;color:#1a6b3a}
+input[type=number].barras-inp{width:50px;text-align:center;padding:3px 4px}
+.del-btn{background:none;border:1px solid #e0aba0;border-radius:4px;color:#c0392b;font-size:11px;padding:2px 5px;cursor:pointer}
+.status{margin-top:10px;padding:9px 13px;border-radius:6px;font-size:.85rem}
+.status.ok{background:#e8f5ec;color:#1a6b3a;border:1px solid #b8dfc8}
+.status.err{background:#fde8e5;color:#c0392b;border:1px solid #f5c6c6}
+.status.warn{background:#fff8e1;color:#7a6000;border:1px solid #f0d060}
+.res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
+.res-item{background:#e8f5ec;border:1px solid #c8dace;border-radius:8px;padding:10px 12px}
+.res-item.dest{background:#1a6b3a;border-color:#1a6b3a}
+.res-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#6a8a72;margin-bottom:2px}
+.res-item.dest .res-label{color:rgba(255,255,255,.6)}
+.res-val{font-weight:700;font-size:1.2rem;color:#1a6b3a}
+.res-item.dest .res-val{color:#fff;font-size:1.5rem}
+.iva-btn{display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:600;border:1px solid #c8dace;background:#e8f5ec;color:#1a6b3a;user-select:none;transition:.2s}
+.iva-btn.on{background:#1a6b3a;color:#fff;border-color:#1a6b3a}
+.iva-dot{width:12px;height:12px;border-radius:50%;background:#c8dace;flex-shrink:0}
+.iva-btn.on .iva-dot{background:rgba(255,255,255,.6)}
+.upload-area{border:2px dashed #c8dace;border-radius:8px;padding:20px;text-align:center;background:#e8f5ec;cursor:pointer;margin-bottom:8px;transition:.2s}
+.upload-area:hover{border-color:#1a6b3a;background:#d0ead8}
+.upload-icon{font-size:2rem;margin-bottom:4px}
+.upload-name{font-weight:600;color:#1a6b3a;font-size:.9rem}
+.upload-hint{font-size:11px;color:#6a8a72;margin-top:3px}
+.pend-table{overflow-x:auto;margin-bottom:10px}
+.info-box{background:#e8f5ec;border:1px solid #c8dace;border-radius:6px;padding:10px 12px;font-size:12px;color:#6a8a72;line-height:1.5;margin-bottom:12px}
+@media(max-width:600px){
+  .app{padding:0 6px}
+  .card-b{padding:10px}
+  header{padding:10px 12px}
+  .logo{font-size:1.2rem}
+}
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <div class="logo">CJ METALES</div>
+    <div class="logo-sub">ROSARIO · ALUMINIO</div>
+  </div>
+  <div class="sep"></div>
+  <div class="titulo">PRESUPUESTADOR</div>
+</header>
+
+<div class="app">
+
+<!-- CLIENTE -->
+<div class="card">
+  <div class="card-h">👤 Datos del cliente</div>
+  <div class="card-b">
+    <div class="row" style="margin-bottom:8px">
+      <div class="fg" style="width:80px"><label>N° Pres.</label><input id="nro" value="001"></div>
+      <div class="fg" style="width:140px"><label>Fecha</label><input id="fecha" type="date"></div>
+      <div class="fg" style="flex:2;min-width:140px"><label>Cliente</label><input id="nombre" placeholder="Nombre o razón social"></div>
+      <div class="fg" style="min-width:120px"><label>Teléfono</label><input id="tel" placeholder="(0341)..."></div>
+      <div class="fg" style="flex:2;min-width:140px"><label>Dirección/Obra</label><input id="dir" placeholder="Calle, ciudad..."></div>
+    </div>
+    <div class="fg"><label>Observaciones</label><input id="obs" placeholder="Condición de pago, plazo..."></div>
+  </div>
+</div>
+
+<!-- OPCIONES -->
+<div class="card">
+  <div class="card-h">⚙ Opciones</div>
+  <div class="card-b row">
+    <div>
+      <label style="display:block;margin-bottom:4px">IVA 10,5%</label>
+      <div class="iva-btn" id="iva-btn" onclick="toggleIVA()">
+        <div class="iva-dot"></div>
+        <span id="iva-txt">Sin IVA (M1/M2)</span>
+      </div>
+    </div>
+    <div class="fg" style="width:90px">
+      <label>Margen %</label>
+      <input id="margen" type="number" value="0" min="0" step="0.5" style="width:90px">
+    </div>
+  </div>
+</div>
+
+<!-- AGREGAR -->
+<div class="card">
+  <div class="card-h">
+    📐 Agregar perfiles
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="tab-btn active" id="tab-manual" onclick="setTab('manual')">✏ Manual</button>
+      <button class="tab-btn" id="tab-ia" onclick="setTab('ia')">🤖 IA</button>
+    </div>
+  </div>
+  <div class="card-b">
+
+    <!-- MANUAL -->
+    <div id="panel-manual">
+      <div class="row">
+        <div class="fg" style="min-width:120px">
+          <label>Línea</label>
+          <select id="m-linea" onchange="actualizarManual()">
+            <option value="herrero">Herrero (6,05m)</option>
+            <option value="modena">Módena (6,15m)</option>
+            <option value="premium">Premium (6,00m)</option>
+            <option value="a30">A30 New (6,15m)</option>
+            <option value="estructural">Estructural (6,15m)</option>
+          </select>
+        </div>
+        <div class="fg" style="min-width:130px">
+          <label>Color</label>
+          <select id="m-color"></select>
+        </div>
+        <div class="fg" style="min-width:100px" id="m-lista-wrap">
+          <label>Lista</label>
+          <select id="m-lista">
+            <option value="l1">M1 – Lista 1</option>
+            <option value="lm">M2 – Mayorista</option>
+          </select>
+        </div>
+        <div class="fg" style="flex:1;min-width:180px">
+          <label>Perfil</label>
+          <select id="m-perfil"></select>
+        </div>
+        <div class="fg" style="width:65px">
+          <label>Barras</label>
+          <input id="m-barras" type="number" value="1" min="1" style="width:65px;text-align:center">
+        </div>
+        <button class="btn" onclick="agregarManual()">+ Agregar</button>
+      </div>
+    </div>
+
+    <!-- IA -->
+    <div id="panel-ia" style="display:none">
+      <div class="info-box">
+        💡 La IA lee tu lista o foto y carga los perfiles automáticamente. Configurá los valores por defecto y luego elegí el modo.
+      </div>
+      <div class="row" style="margin-bottom:12px">
+        <div class="fg" style="min-width:110px">
+          <label>Línea default</label>
+          <select id="ia-linea" onchange="actualizarIA()">
+            <option value="herrero">Herrero</option>
+            <option value="modena" selected>Módena</option>
+            <option value="premium">Premium</option>
+            <option value="a30">A30 New</option>
+            <option value="estructural">Estructural</option>
+          </select>
+        </div>
+        <div class="fg" style="min-width:130px">
+          <label>Color default</label>
+          <select id="ia-color"></select>
+        </div>
+        <div class="fg" style="min-width:100px">
+          <label>Lista default</label>
+          <select id="ia-lista">
+            <option value="l1">M1 – Lista 1</option>
+            <option value="lm">M2 – Mayorista</option>
+          </select>
+        </div>
+      </div>
+
+      <div style="display:flex;gap:6px;margin-bottom:12px">
+        <button class="tab-btn active" id="ia-tab-txt" onclick="setIAMode('texto')">📝 Texto</button>
+        <button class="tab-btn" id="ia-tab-foto" onclick="setIAMode('foto')">📎 Foto / PDF</button>
+      </div>
+
+      <!-- TEXTO -->
+      <div id="ia-panel-txt">
+        <label style="display:block;margin-bottom:4px">Pegá tu lista (cualquier formato)</label>
+        <textarea id="ia-txt" rows="4" placeholder="Ejemplos:&#10;6200-6, 6201-4, 6207-4&#10;101 x3, 102 x2&#10;Marco corrediza 2 barras, parante 3" style="resize:vertical;min-height:80px;margin-bottom:8px"></textarea>
+        <button class="btn" id="btn-txt" onclick="analizarTexto()">⚡ Analizar y cargar</button>
+      </div>
+
+      <!-- FOTO -->
+      <div id="ia-panel-foto" style="display:none">
+        <div class="upload-area" onclick="document.getElementById('ia-file').click()">
+          <div class="upload-icon">📄</div>
+          <div class="upload-name" id="upload-name">Tocá para subir foto o PDF</div>
+          <div class="upload-hint">JPG, PNG o PDF</div>
+        </div>
+        <input type="file" id="ia-file" accept="image/jpeg,image/png,image/gif,image/webp,application/pdf" style="display:none" onchange="archivoSeleccionado(this)">
+        <div id="file-info" style="display:none;margin-bottom:8px">
+          <span id="file-nombre" style="font-size:12px;color:#1a6b3a;font-weight:600"></span>
+          <button class="btn-g btn" style="margin-left:8px;font-size:11px;padding:2px 8px" onclick="quitarArchivo()">✕ Quitar</button>
+        </div>
+        <button class="btn" id="btn-foto" onclick="analizarFoto()">⚡ Analizar y cargar</button>
+      </div>
+
+      <div id="ia-status"></div>
+
+      <!-- PREVIEW -->
+      <div id="ia-preview" style="display:none;margin-top:14px">
+        <div style="font-weight:700;color:#1a6b3a;font-size:.85rem;margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase">Perfiles reconocidos — confirmá para cargar</div>
+        <div class="pend-table">
+          <table>
+            <thead><tr><th>Código</th><th>Descripción</th><th>Línea</th><th>Barras</th><th>Color</th><th>Estado</th></tr></thead>
+            <tbody id="preview-body"></tbody>
+          </table>
+        </div>
+        <div style="display:flex;gap:8px;margin-top:8px">
+          <button class="btn" onclick="confirmarIA()">✅ Confirmar y cargar</button>
+          <button class="btn btn-g" onclick="cancelarIA()">✕ Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TABLA -->
+<div class="card">
+  <div class="card-h">📋 Perfiles cargados <span class="badge" id="badge">0 ítems</span></div>
+  <div style="overflow-x:auto">
+    <table id="tabla-perfiles">
+      <thead>
+        <tr><th>Línea</th><th>Código</th><th>Descripción</th><th>Color</th><th>kg/m</th><th>Barras</th><th>m/b</th><th>kg tot</th><th>$/kg</th><th>Subtotal</th><th></th></tr>
+      </thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div id="tabla-vacia" style="padding:24px;text-align:center;color:#6a8a72;font-style:italic;font-size:.88rem">Agregá perfiles usando el panel de arriba</div>
+  </div>
+</div>
+
+<!-- RESUMEN -->
+<div class="card" id="card-resumen" style="display:none">
+  <div class="card-h">💰 Resumen</div>
+  <div class="card-b">
+    <div class="res-grid" id="res-grid"></div>
+    <div style="overflow-x:auto;margin-bottom:14px">
+      <table id="tabla-desglose">
+        <thead>
+          <tr style="background:#0d1f14"><th>Línea</th><th>Código</th><th>Descripción</th><th>Color</th><th>Barras</th><th>kg total</th><th>$/kg</th><th>Subtotal</th></tr>
+        </thead>
+        <tbody id="desglose-body"></tbody>
+      </table>
+    </div>
+    <div style="display:flex;gap:8px">
+      <button class="btn" onclick="window.print()">🖨 Imprimir</button>
+      <button class="btn btn-g" onclick="limpiar()">🗑 Limpiar todo</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- /app -->
+
+<script>
+// ============================================================
+// CATÁLOGOS
+// ============================================================
+const LINEAS={herrero:{n:'Herrero',l:6.05},modena:{n:'Módena',l:6.15},premium:{n:'Premium',l:6.00},a30:{n:'A30 New',l:6.15},estructural:{n:'Estructural',l:6.15}};
+const L1={'001':11622,'002':13030,'003':13128,'004':13128,'005':28132,'006':16905,'007':19596,'008':20556,'009':20556,'010':19980,'011':19596,'012':19865};
+const LM={'001':12203,'002':13680,'003':13783,'004':13783,'005':27014,'006':17750,'007':20575,'008':21583,'009':21583,'010':20978,'011':20575,'012':20857};
+const L1E={'013':14621,'014':16198,'015':16485,'016':16485,'017':29329,'018':19680,'019':22310,'020':23612,'021':23612,'022':22781,'023':22781,'024':23230};
+const LME={'013':15352,'014':17007,'015':17308,'016':17308,'017':28167,'018':20663,'019':23425,'020':24792,'021':24792,'022':23919,'023':23919,'024':24390};
+const PP=13500;
+const CS=[['001','Natural'],['002','Blanco'],['003','Negro'],['004','Bronce'],['005','Madera'],['006','Anod.Natural'],['007','Anod.Bronce Cl.'],['008','Anod.Bronce Osc.'],['009','Anod.Negro'],['010','Anod.Peltre'],['011','Anod.Champagne'],['012','Especial']];
+const CE=[['013','Natural'],['014','Blanco'],['015','Negro'],['016','Bronce'],['017','Madera'],['018','Anod.Natural'],['019','Anod.Bronce Cl.'],['020','Anod.Bronce Osc.'],['021','Anod.Negro'],['022','Anod.Peltre'],['023','Anod.Champagne'],['024','Especial']];
+const CP=[['blanco','Blanco'],['negro','Negro']];
+const gc=l=>l==='premium'?CP:l==='estructural'?CE:CS;
+const gp=(l,ls,c)=>{if(l==='premium')return PP;const t=l==='estructural'?(ls==='l1'?L1E:LME):(ls==='l1'?L1:LM);return t[c]||0;};
+const fm=n=>Math.round(n).toLocaleString('es-AR');
+
+const CH={'17':[1.1,'Marco alto tránsito'],'22':[0.359,'Tablilla unión marco 75'],'30':[0.383,'Perfil central vidrio repartido'],'31':[0.264,'Perfil lateral vidrio repartido'],'32':[0.274,'Perfil lateral 32'],'37':[0.268,'Doble contacto puerta 25mm'],'39':[0.536,'Marco puerta 36'],'40':[0.311,'Doble contacto puerta 36mm'],'44':[0.848,'Zócalo alto puerta corrediza'],'45':[0.144,'Tapa junta'],'46':[0.36,'Revestimiento acanalado'],'47':[0.86,'Revestimiento tubular'],'48':[0.355,'Marco puerta placa 45'],'53':[0.645,'Parante lateral reforzado 90°'],'54':[0.498,'Parante central reforzado'],'58':[1.141,'Marco corrediza 4 guías postigón'],'100':[0.584,'Marco corrediza liviano'],'101':[0.742,'Marco de corrediza'],'102':[0.443,'Cabezal y zócalo de hoja'],'103':[0.454,'Parante lateral hoja corrediza'],'104':[0.413,'Parante central hoja corrediza'],'105':[0.331,'Hoja mosquitero'],'107':[0.65,'Paño fijo herrero'],'108':[0.355,'Contravidrio herrero'],'161':[0.454,'Marco aireador'],'178':[0.464,'Parante postigón chico'],'185':[1.339,'Columna acople recto'],'186':[1.204,'Columna acople curvo'],'188B':[0.367,'Marco chico postigón'],'332':[0.644,'Escuadra intermedia'],'417':[0.293,'Tablilla curva postigón'],'418':[0.271,'Tablilla recta postigón'],'599':[0.605,'Travesaño mosquitero'],'691':[1.323,'Marco tres guías'],'MPR25':[0.488,'Marco postigón'],'PP25':[0.679,'Parante postigón 25'],'PP36':[1.09,'Parante puerta 36'],'TP36':[1.045,'Travesaño puerta 36'],'822':[0.429,'Batinete mosquitero'],'973':[0.483,'Marco paño fijo'],'987':[1.312,'Columna acople 45°'],'1573':[0.134,'Hoja mosquitero fijo'],'1690':[0.483,'Guía vent.corrediza escuadra'],'1920':[0.456,'Guía cortina enrollar'],'830':[0.346,'Hoja mampara baño'],'1345':[0.77,'Cabezal cubre bañera'],'1349':[0.37,'Inferior mampara'],'1350':[0.292,'Jamba cubre bañera']};
+const CM={'5989':[0.141,'Varilla accionamiento vent.abrir'],'6200':[1.266,'Umbral y dintel marco corrediza'],'6201':[0.664,'Jambas marco ventana/puerta corrediza'],'6203':[0.651,'Parante lateral hoja vidrio simple'],'6204':[0.705,'Zócalo y cabezal hoja vidrio simple'],'6205':[0.41,'Premarco'],'6206':[0.181,'Tapa premarco'],'6207':[0.613,'Parante central hoja vidrio simple'],'6208':[0.813,'Parante central con tirador'],'6209':[1.266,'Zócalo alto hoja vidrio simple'],'6210':[0.789,'Marco ventana abrir cámara'],'6211':[0.848,'Hoja ventana abrir cámara'],'6212':[0.316,'Contravidrio 36mm'],'6213':[0.257,'Perfil de acople'],'6214':[1.088,'Jambas y cabezal hoja puerta rebatir'],'6215':[0.864,'Hoja ventana abrir DC/banderola'],'6216':[0.726,'Marco vent.abrir DC/banderola/rebatir'],'6217':[0.294,'Contravidrio 29mm'],'6218':[1.15,'Travesaño hoja puerta rebatir'],'6219':[1.647,'Zócalo hoja puerta rebatir'],'6220':[0.173,'Contravidrio exterior puerta rebatir'],'6221':[0.767,'Travesaño hoja puerta rebatir alt.'],'6222':[0.842,'Travesaño ancho paño fijo'],'6224':[0.794,'Encuentro central vent.abrir 2 hojas DC'],'6225':[0.257,'Contravidrio recto 22mm'],'6226':[0.211,'Contravidrio recto 15mm'],'6227':[0.864,'Hoja ventiluz'],'6228':[0.186,'Tope mosquitero'],'6229':[0.764,'Paño fijo curvo'],'6230':[0.213,'Contravidrio curvo 29mm'],'6231':[0.17,'Contravidrio curvo 15mm'],'6232':[0.194,'Contravidrio curvo 22mm'],'6233':[0.135,'Contravidrio curvo 8mm'],'6234':[0.888,'Hoja curva vent.abrir cámara'],'6235':[0.902,'Hoja curva vent.abrir DC/banderola'],'6236':[0.907,'Hoja curva ventiluz'],'6237':[0.181,'Contravidrio exterior curvo rebatir'],'6238':[0.178,'Contravidrio recto 8mm'],'6239':[0.705,'Contravidrio recto 8mm alt.'],'6240':[1.841,'Umbral/dintel marco 3 guías'],'6241':[0.975,'Jambas marco 3 guías'],'6243':[0.548,'Guía cortina común'],'6244':[0.913,'Guía cortina barrio'],'6245':[0.678,'Tapa cinta'],'6246':[0.292,'Encuentro central 4 hojas'],'6248':[0.621,'Parante lateral hoja DVH'],'6249':[0.689,'Zócalo y cabezal hoja DVH'],'6250':[0.583,'Parante central hoja DVH'],'6251':[0.797,'Parante central tirador DVH'],'6252':[1.237,'Zócalo alto hoja DVH puerta'],'6253':[0.689,'Travesaño hoja DVH puerta'],'6254':[0.302,'Bisagra tapa cinta'],'6255':[0.424,'Bastidor mosquitero'],'6256':[0.508,'Travesaño mosquitero'],'6257':[0.24,'Contravidrio curvo 36mm'],'6258':[1.061,'Hoja vent.proyectante recta'],'6259':[0.726,'Marco vent.proyectante'],'6260':[1.099,'Hoja vent.proyectante curva'],'6261':[1.28,'Columna acople reforzada'],'6262':[0.68,'Perfil acople 90°'],'6263':[1.679,'Zócalo alto paño fijo'],'6264':[0.713,'Travesaño paño fijo curvo'],'6265':[0.543,'Perfil acople 135°'],'6277':[0.518,'Tablilla regulable postigón'],'6278':[0.319,'Compensador corto postigón'],'6279':[0.392,'Compensador largo postigón'],'6906':[1.183,'Marco perimetral corrediza 45°'],'6907':[0.338,'Complemento parante central 45°'],'6908':[0.894,'Hoja vidrio simple 45°'],'6909':[0.84,'Hoja DVH 45°']};
+const CA={'5965':[0.288,'Encuentro central corrediza 4 hojas'],'6034':[1.399,'Parante lateral corrediza'],'6035':[1.531,'Parante central corrediza'],'6036':[0.891,'Jambas de marco'],'6037':[1.744,'Umbral y dintel de marco'],'6038':[0.594,'Mosquitero reforzado'],'6039':[0.329,'Tope mosquitero'],'6040':[1.18,'Marco puerta rebatir coplanar'],'6041':[1.388,'Hoja puerta de rebatir'],'6042':[1.399,'Marco puerta de rebatir'],'6043':[1.037,'Zócalo puerta de rebatir'],'6044':[2.319,'Encuentro central puerta rebatir'],'6045':[0.351,'Contravidrio recto vidrio simple'],'6046':[0.259,'Contravidrio recto DVH'],'6047':[0.254,'Contravidrio curvo vidrio simple'],'6048':[0.197,'Contravidrio curvo DVH'],'6049':[0.232,'Contravidrio recto ext. puerta rebatir'],'6050':[0.192,'Contravidrio curvo ext. puerta rebatir'],'6051':[0.986,'Marco ventana de abrir'],'6052':[1.139,'Hoja curva ventana abrir'],'6053':[1.094,'Encuentro central ventana abrir'],'6054':[1.148,'Hoja recta ventana abrir'],'6055':[1.037,'Marco paño fijo y ventana abrir'],'6056':[1.337,'Hoja curva ventana desplazable'],'6057':[0.837,'Marco ventana desplazable'],'6058':[1.345,'Hoja recta ventana desplazable'],'6059':[1.053,'Marco recto paño fijo y ventana abrir'],'6060':[1.091,'Travesaño paño fijo'],'6061':[0.942,'Zócalo y cabezal ventana corrediza'],'6062':[1.477,'Zócalo alto puerta corrediza'],'6064':[0.672,'Guía cortina común'],'6065':[1.088,'Guía cortina barrio'],'6066':[0.545,'Premarco'],'6067':[0.753,'Acople 60mm marco 3 guías'],'6068':[0.329,'Perfil de acople'],'6069':[0.937,'Acople 90 grados'],'6071':[1.334,'Parante lateral corrediza DVH'],'6072':[1.466,'Parante central corrediza DVH'],'6073':[0.861,'Zócalo y cabezal corrediza DVH'],'6074':[1.412,'Zócalo alto corrediza DVH'],'6078':[1.758,'Perfil acople reforzado'],'6079':[0.994,'Premarco corrediza 3 hojas'],'6080':[1.701,'Jamba marco corrediza 3 hojas'],'6081':[2.908,'Umbral y dintel corrediza 3 hojas'],'6082':[1.463,'Parante central tercer hoja DVH'],'6083':[1.528,'Parante central tercer hoja'],'6206':[0.186,'Tapa premarco'],'6508':[1.463,'Adaptador corte 90°']};
+const CPR={'7215':[1.818,'Umbral/dintel marco corrediza 2 guías'],'7220':[1.281,'Jamba marco corrediza 2 guías'],'7263':[2.54,'Umbral/dintel 3 guías'],'7264':[2.14,'Jamba 3 guías'],'7221':[1.047,'Parante lateral hoja 90° DVH'],'7216':[1.15,'Parante central hoja 90° DVH'],'7217':[0.933,'Zócalo y cabezal hoja 90° DVH'],'7218':[1.505,'Zócalo alto hoja 90° DVH'],'7219':[0.46,'Solapa cruce hojas'],'7222':[1.29,'Hoja corrediza 45° DVH'],'7243':[0.92,'Umbral/dintel adicional'],'7244':[0.69,'Jamba adicional lisa'],'7245':[0.82,'Jamba adicional con U'],'7266':[0.51,'Guía mosquitero'],'7144':[1.02,'Mosquitero corredizo'],'7247':[0.49,'Encuentro central 4 hojas'],'4045':[0.4,'Contravidrio recto 37mm'],'4046':[0.26,'Contravidrio recto 19mm'],'4051':[0.27,'Contravidrio recto 37mm clip'],'4052':[0.21,'Contravidrio recto 19mm clip'],'7261':[0.09,'Guía inferior corrediza'],'7063':[0.19,'Contramarco recto'],'4059':[0.936,'Marco paño fijo/ventana rebatir'],'4054':[1.056,'Hoja recta ventana abrir'],'7340':[1.42,'Hoja puerta rebatir'],'7335':[2.19,'Zócalo puerta rebatir'],'7223':[1.04,'Encuentro central puerta rebatir'],'7336':[1.38,'Travesaño puerta rebatir'],'4060':[1.05,'Travesaño paño fijo'],'4067':[0.31,'Perfil de acople'],'7233':[0.7,'Acople 180°']};
+const CE2={'NL-800':[0.092,'Ángulo 9,5×9,5'],'NL-012':[0.103,'Ángulo 12×12'],'NL-015':[0.116,'Ángulo 15×15'],'NL-020':[0.165,'Ángulo 20×20'],'NL-809':[0.205,'Ángulo 20×20 e2'],'NL-027':[0.381,'Ángulo 25×25 e3'],'NL-811':[0.265,'Ángulo 25,4×25,4'],'NL-032':[0.254,'Ángulo 32×32'],'NL-039':[0.4,'Ángulo 38×38'],'NL-820':[0.591,'Ángulo 38×38 e3'],'NL-036':[0.778,'Ángulo 38×38 e4'],'NL-051':[0.4,'Ángulo 50×50'],'NL-050':[0.786,'Ángulo 50×50 e3'],'NL-823':[0.537,'Ángulo 50,8×50,8'],'NL-824':[0.799,'Ángulo 50,8×50,8 e3'],'NL-830':[1.053,'Ángulo 50,8×50,8 e4'],'NL-033':[0.176,'Perfil L 30×15'],'NL-037':[0.248,'Perfil L 38×25'],'NL-040':[0.238,'Perfil L 40×20'],'NL-855':[0.302,'Perfil L 50,8×25,4'],'NL-080':[0.529,'Perfil L 80×20'],'NL-100':[0.637,'Perfil L 100×20'],'NU-750':[0.157,'Perfil U 11×19'],'NU-082':[0.143,'Perfil U 12,7×12,7'],'NU-018':[0.173,'Perfil U 12,7×18'],'NU-317':[0.302,'Perfil U 20×20'],'NU-067':[0.262,'Perfil U 34×17'],'NU-340':[0.324,'Perfil U 60×11,5'],'TC-101':[0.154,'Tubo cuadrado 12,7'],'TC-015':[0.186,'Tubo cuadrado 15'],'TC-020':[0.254,'Tubo cuadrado 20'],'TC-025':[0.381,'Tubo cuadrado 25'],'TC-030':[0.389,'Tubo cuadrado 30'],'TC-038':[0.591,'Tubo cuadrado 38'],'TC-045':[0.705,'Tubo cuadrado 45'],'TC-049':[0.786,'Tubo cuadrado 50'],'TC-050':[1.037,'Tubo cuadrado 50 e2'],'TC-060':[0.948,'Tubo cuadrado 60'],'TC-601':[1.288,'Tubo cuadrado 76'],'TC-032':[0.316,'Tubo rect. 30×12'],'TC-138':[0.486,'Tubo rect. 38×25'],'TC-140':[0.462,'Tubo rect. 40×20'],'TC-150':[0.583,'Tubo rect. 50×25'],'TC-160':[0.624,'Tubo rect. 60×20'],'TC-170':[0.867,'Tubo rect. 70×40'],'TC-175':[0.786,'Tubo rect. 75×25'],'TC-177':[0.988,'Tubo rect. 75×50'],'TC-190':[1.229,'Tubo rect. 90×40'],'TC-100':[1.374,'Tubo rect. 100×45'],'NP-025':[0.138,'Planchuela 25,4×2'],'NP-032':[0.173,'Planchuela 32×2'],'NP-038':[0.205,'Planchuela 38,1×2'],'NP-051':[0.297,'Planchuela 50×2,2'],'NP-052':[0.405,'Planchuela 50×3'],'NT-901':[0.2,'Perfil T 19×19'],'NT-907':[0.302,'Perfil T 38×38'],'NT-910':[0.537,'Perfil T 50,8×50,8']};
+const CATS={herrero:CH,modena:CM,premium:CPR,a30:CA,estructural:CE2};
+
+// ============================================================
+// ESTADO
+// ============================================================
+let items=[];
+let ivaOn=false;
+let pendientes=null;
+let archivoData=null;
+
+// ============================================================
+// INIT
+// ============================================================
+window.onload=()=>{
+  document.getElementById('fecha').value=new Date().toISOString().split('T')[0];
+  actualizarManual();
+  actualizarIA();
+};
+
+function llenarColores(selId,linea){
+  const sel=document.getElementById(selId);
+  const cols=gc(linea);
+  sel.innerHTML=cols.map(([c,n])=>`<option value="${c}">${c} – ${n}</option>`).join('');
+}
+
+function llenarPerfiles(linea){
+  const sel=document.getElementById('m-perfil');
+  sel.innerHTML='<option value="">— Seleccionar —</option>'+
+    Object.entries(CATS[linea])
+      .sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true}))
+      .map(([c,[p,d]])=>`<option value="${c}">${c} – ${d} (${p.toFixed(3)} kg/m)</option>`)
+      .join('');
+}
+
+function actualizarManual(){
+  const l=document.getElementById('m-linea').value;
+  llenarColores('m-color',l);
+  llenarPerfiles(l);
+  document.getElementById('m-lista-wrap').style.display=l==='premium'?'none':'';
+}
+
+function actualizarIA(){
+  const l=document.getElementById('ia-linea').value;
+  llenarColores('ia-color',l);
+}
+
+// ============================================================
+// TABS
+// ============================================================
+function setTab(t){
+  document.getElementById('panel-manual').style.display=t==='manual'?'':'none';
+  document.getElementById('panel-ia').style.display=t==='ia'?'':'none';
+  document.getElementById('tab-manual').className='tab-btn'+(t==='manual'?' active':'');
+  document.getElementById('tab-ia').className='tab-btn'+(t==='ia'?' active':'');
+}
+
+function setIAMode(m){
+  document.getElementById('ia-panel-txt').style.display=m==='texto'?'':'none';
+  document.getElementById('ia-panel-foto').style.display=m==='foto'?'':'none';
+  document.getElementById('ia-tab-txt').className='tab-btn'+(m==='texto'?' active':'');
+  document.getElementById('ia-tab-foto').className='tab-btn'+(m==='foto'?' active':'');
+}
+
+// ============================================================
+// IVA
+// ============================================================
+function toggleIVA(){
+  ivaOn=!ivaOn;
+  const btn=document.getElementById('iva-btn');
+  btn.className='iva-btn'+(ivaOn?' on':'');
+  document.getElementById('iva-txt').textContent=ivaOn?'Con IVA → B1/B2':'Sin IVA (M1/M2)';
+  recalcular();
+}
+
+// ============================================================
+// AGREGAR MANUAL
+// ============================================================
+function agregarManual(){
+  const l=document.getElementById('m-linea').value;
+  const c=document.getElementById('m-color').value;
+  const ls=document.getElementById('m-lista').value;
+  const cod=document.getElementById('m-perfil').value;
+  const b=parseInt(document.getElementById('m-barras').value)||1;
+  if(!cod||!CATS[l][cod])return;
+  const[p,d]=CATS[l][cod];
+  items.push({id:Date.now(),linea:l,color:c,lista:ls,codigo:cod,desc:d,pesoKgm:p,barras:b,lb:LINEAS[l].l,precio:gp(l,ls,c)});
+  document.getElementById('m-perfil').value='';
+  document.getElementById('m-barras').value=1;
+  renderTabla();
+  recalcular();
+}
+
+// ============================================================
+// IA - ARCHIVO
+// ============================================================
+function archivoSeleccionado(input){
+  const f=input.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{archivoData={file:f,b64:ev.target.result};};
+  r.readAsDataURL(f);
+  document.getElementById('upload-name').textContent=f.name;
+  document.getElementById('file-nombre').textContent='✓ '+f.name;
+  document.getElementById('file-info').style.display='';
+}
+
+function quitarArchivo(){
+  archivoData=null;
+  document.getElementById('ia-file').value='';
+  document.getElementById('upload-name').textContent='Tocá para subir foto o PDF';
+  document.getElementById('file-info').style.display='none';
+}
+
+// ============================================================
+// IA - LLAMADAS AL BACKEND
+// ============================================================
+function setStatus(msg,tipo){
+  const el=document.getElementById('ia-status');
+  el.className='status '+tipo;
+  el.textContent=msg;
+  el.style.display='';
+}
+
+async function analizarTexto(){
+  const txt=document.getElementById('ia-txt').value.trim();
+  if(!txt){setStatus('Escribí o pegá algo primero.','warn');return;}
+  const l=document.getElementById('ia-linea').value;
+  const c=document.getElementById('ia-color').value;
+  const ls=document.getElementById('ia-lista').value;
+  const btn=document.getElementById('btn-txt');
+  btn.disabled=true;btn.textContent='Analizando...';
+  setStatus('🤖 Analizando con IA...','warn');
+  try{
+    const r=await fetch('/api/analizar-texto',{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({texto:txt,lineaDefault:l,colorDefault:c,listaDefault:ls})
+    });
+    const data=await r.json();
+    if(!data.ok)throw new Error(data.error);
+    mostrarPreview(data.perfiles);
+  }catch(e){setStatus('Error: '+e.message,'err');}
+  btn.disabled=false;btn.textContent='⚡ Analizar y cargar';
+}
+
+async function analizarFoto(){
+  if(!archivoData){setStatus('Subí una imagen o PDF primero.','warn');return;}
+  const l=document.getElementById('ia-linea').value;
+  const c=document.getElementById('ia-color').value;
+  const ls=document.getElementById('ia-lista').value;
+  const btn=document.getElementById('btn-foto');
+  btn.disabled=true;btn.textContent='Analizando...';
+  setStatus('🤖 Leyendo imagen con IA...','warn');
+  try{
+    const fd=new FormData();
+    fd.append('imagen',archivoData.file);
+    fd.append('lineaDefault',l);
+    fd.append('colorDefault',c);
+    fd.append('listaDefault',ls);
+    const r=await fetch('/api/analizar-imagen',{method:'POST',body:fd});
+    const data=await r.json();
+    if(!data.ok)throw new Error(data.error);
+    mostrarPreview(data.perfiles);
+  }catch(e){setStatus('Error: '+e.message,'err');}
+  btn.disabled=false;btn.textContent='⚡ Analizar y cargar';
+}
+
+function mostrarPreview(lista){
+  pendientes=lista;
+  const ok=lista.filter(i=>i.reconocido&&CATS[i.linea]?.[i.codigo]).length;
+  setStatus(`✅ ${lista.length} perfiles reconocidos, ${ok} verificados. Confirmá para cargar.`,'ok');
+  const tbody=document.getElementById('preview-body');
+  tbody.innerHTML=lista.map((it,i)=>{
+    const existe=CATS[it.linea]?.[it.codigo];
+    const bg=!existe?'background:#fff8e1':'';
+    return `<tr style="${bg}">
+      <td class="cod">${it.codigo}</td>
+      <td>${it.descripcion}</td>
+      <td class="mut">${LINEAS[it.linea]?.n||it.linea}</td>
+      <td style="text-align:center">${it.barras}</td>
+      <td class="mut">${it.color}</td>
+      <td>${!existe?'⚠ No encontrado':it.reconocido?'✅ OK':'⚠ Revisar'}${it.nota?`<br><small style="color:#888">${it.nota}</small>`:''}</td>
+    </tr>`;
+  }).join('');
+  document.getElementById('ia-preview').style.display='';
+}
+
+function confirmarIA(){
+  if(!pendientes)return;
+  let n=0;
+  pendientes.forEach(it=>{
+    const cat=CATS[it.linea];if(!cat||!cat[it.codigo])return;
+    const[p,d]=cat[it.codigo];
+    items.push({id:Date.now()+Math.random(),linea:it.linea,color:it.color,lista:it.lista,codigo:it.codigo,desc:d,pesoKgm:p,barras:parseInt(it.barras)||1,lb:LINEAS[it.linea].l,precio:gp(it.linea,it.lista,it.color)});
+    n++;
+  });
+  pendientes=null;
+  document.getElementById('ia-preview').style.display='none';
+  document.getElementById('ia-txt').value='';
+  quitarArchivo();
+  setStatus(`✅ ${n} perfiles cargados al presupuesto.`,'ok');
+  renderTabla();recalcular();
+}
+
+function cancelarIA(){
+  pendientes=null;
+  document.getElementById('ia-preview').style.display='none';
+  document.getElementById('ia-status').style.display='none';
+}
+
+// ============================================================
+// RENDER TABLA
+// ============================================================
+function renderTabla(){
+  const tbody=document.getElementById('tbody');
+  document.getElementById('badge').textContent=items.length+' ítem'+(items.length!==1?'s':'');
+  document.getElementById('tabla-vacia').style.display=items.length?'none':'';
+  document.getElementById('tabla-perfiles').style.display=items.length?'':'none';
+  if(!items.length)return;
+  tbody.innerHTML=items.map(it=>{
+    const kg=it.pesoKgm*it.barras*it.lb,s=kg*it.precio;
+    return `<tr>
+      <td class="mut">${LINEAS[it.linea].n}</td>
+      <td class="cod">${it.codigo}</td>
+      <td>${it.desc}</td>
+      <td class="mut">${it.color}</td>
+      <td>${it.pesoKgm.toFixed(3)}</td>
+      <td><input type="number" class="barras-inp" value="${it.barras}" min="1" onchange="cambiarBarras(${it.id},this.value)"></td>
+      <td class="mut">${it.lb.toFixed(2)}</td>
+      <td>${kg.toFixed(3)}</td>
+      <td>$ ${fm(it.precio)}</td>
+      <td class="sub-val">$ ${fm(s)}</td>
+      <td><button class="del-btn" onclick="eliminar(${it.id})">✕</button></td>
+    </tr>`;
+  }).join('');
+}
+
+function eliminar(id){items=items.filter(i=>i.id!==id);renderTabla();recalcular();}
+function cambiarBarras(id,v){const it=items.find(i=>i.id===id);if(it){it.barras=parseInt(v)||1;recalcular();}}
+
+// ============================================================
+// RECALCULAR
+// ============================================================
+function recalcular(){
+  if(!items.length){document.getElementById('card-resumen').style.display='none';return;}
+  document.getElementById('card-resumen').style.display='';
+  const mrg=parseFloat(document.getElementById('margen').value)||0;
+  const kgT=items.reduce((s,i)=>s+i.pesoKgm*i.barras*i.lb,0);
+  const sub=items.reduce((s,i)=>s+i.pesoKgm*i.barras*i.lb*i.precio,0);
+  const ivaV=ivaOn?sub*0.105:0;
+  const mrgV=(sub+ivaV)*(mrg/100);
+  const tot=sub+ivaV+mrgV;
+
+  const grid=document.getElementById('res-grid');
+  const datos=[['Peso total',kgT.toFixed(3)+' kg',false],['Subtotal','$ '+fm(sub),false]];
+  if(ivaOn)datos.push(['IVA 10,5%','$ '+fm(ivaV),false]);
+  if(mrg>0)datos.push(['Margen '+mrg+'%','$ '+fm(mrgV),false]);
+  datos.push(['TOTAL','$ '+fm(tot),true]);
+  grid.innerHTML=datos.map(([l,v,d])=>`
+    <div class="res-item${d?' dest':''}">
+      <div class="res-label">${l}</div>
+      <div class="res-val">${v}</div>
+    </div>`).join('');
+
+  const dbody=document.getElementById('desglose-body');
+  dbody.innerHTML=items.map((it,i)=>{
+    const kg=it.pesoKgm*it.barras*it.lb,s=kg*it.precio;
+    return `<tr style="background:${i%2?'#f7fbf8':'#fff'}">
+      <td class="mut">${LINEAS[it.linea].n}</td>
+      <td class="cod">${it.codigo}</td>
+      <td>${it.desc}</td>
+      <td class="mut">${it.color}</td>
+      <td style="text-align:center">${it.barras}</td>
+      <td>${kg.toFixed(3)} kg</td>
+      <td>$ ${fm(it.precio)}</td>
+      <td class="sub-val" style="text-align:right">$ ${fm(s)}</td>
+    </tr>`;
+  }).join('')+`<tr style="background:#e0f0e6">
+    <td colspan="4" style="font-weight:700;padding:7px 6px">TOTAL</td>
+    <td style="text-align:center;font-weight:700">${items.reduce((s,i)=>s+i.barras,0)}</td>
+    <td style="font-weight:700">${kgT.toFixed(3)} kg</td>
+    <td></td>
+    <td style="text-align:right;font-weight:700;color:#1a6b3a;font-size:1rem">$ ${fm(tot)}</td>
+  </tr>`;
+}
+
+function limpiar(){if(confirm('¿Limpiar todo?')){items=[];renderTabla();recalcular();}}
+
+// Init tabla
+document.getElementById('tabla-perfiles').style.display='none';
+</script>
+</body>
+</html>
