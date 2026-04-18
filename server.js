@@ -295,7 +295,7 @@ LISTA A INTERPRETAR:
 ${texto}`;
 
     const message = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 2000,
       messages: [{ role: 'user', content: prompt }]
     });
@@ -333,7 +333,7 @@ Defaults: linea=${lineaDefault}, color=${colorDefault}, lista=${listaDefault}.
 Extraé todos los códigos y cantidades visibles en la imagen.`;
 
     const message = await client.messages.create({
-      model: 'claude-sonnet-4-20250514',
+      model: 'claude-sonnet-4-5',
       max_tokens: 2000,
       messages: [{
         role: 'user',
