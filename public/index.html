@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -63,6 +64,10 @@ input[type=number].barras-inp{width:50px;text-align:center;padding:3px 4px}
 .upload-hint{font-size:11px;color:#6a8a72;margin-top:3px}
 .pend-table{overflow-x:auto;margin-bottom:10px}
 .info-box{background:#e8f5ec;border:1px solid #c8dace;border-radius:6px;padding:10px 12px;font-size:12px;color:#6a8a72;line-height:1.5;margin-bottom:12px}
+/* Inputs editables en tabla preview */
+.edit-inp{border:1px solid #c8dace;border-radius:4px;padding:3px 5px;font-size:.78rem;background:#fff;width:100%;min-width:60px}
+.edit-inp:focus{border-color:#1a6b3a;outline:none}
+.edit-sel{border:1px solid #c8dace;border-radius:4px;padding:3px 4px;font-size:.75rem;background:#fff;width:100%}
 @media(max-width:600px){
   .app{padding:0 6px}
   .card-b{padding:10px}
@@ -166,7 +171,7 @@ input[type=number].barras-inp{width:50px;text-align:center;padding:3px 4px}
     <!-- IA -->
     <div id="panel-ia" style="display:none">
       <div class="info-box">
-        💡 La IA lee tu lista o foto y carga los perfiles automáticamente. Configurá los valores por defecto y luego elegí el modo.
+        💡 La IA lee tu lista o foto y carga los perfiles automáticamente. Podés corregir cualquier error antes de confirmar.
       </div>
       <div class="row" style="margin-bottom:12px">
         <div class="fg" style="min-width:110px">
@@ -221,15 +226,52 @@ input[type=number].barras-inp{width:50px;text-align:center;padding:3px 4px}
 
       <div id="ia-status"></div>
 
-      <!-- PREVIEW -->
+      <!-- PREVIEW EDITABLE -->
       <div id="ia-preview" style="display:none;margin-top:14px">
-        <div style="font-weight:700;color:#1a6b3a;font-size:.85rem;margin-bottom:8px;letter-spacing:.5px;text-transform:uppercase">Perfiles reconocidos — confirmá para cargar</div>
+        <div style="font-weight:700;color:#1a6b3a;font-size:.85rem;margin-bottom:4px;letter-spacing:.5px;text-transform:uppercase">Perfiles reconocidos — editá si es necesario y confirmá</div>
+        <div style="font-size:11px;color:#6a8a72;margin-bottom:8px">✏ Podés corregir código, línea y barras directamente en la tabla. Usá ✕ para eliminar filas incorrectas.</div>
         <div class="pend-table">
-          <table>
-            <thead><tr><th>Código</th><th>Descripción</th><th>Línea</th><th>Barras</th><th>Color</th><th>Estado</th></tr></thead>
+          <table id="preview-table">
+            <thead>
+              <tr>
+                <th>Código</th>
+                <th>Descripción</th>
+                <th>Línea</th>
+                <th style="width:60px">Barras</th>
+                <th>Estado</th>
+                <th style="width:30px"></th>
+              </tr>
+            </thead>
             <tbody id="preview-body"></tbody>
           </table>
         </div>
+
+        <!-- AGREGAR FILA MANUAL EN PREVIEW -->
+        <div style="background:#f0f4f1;border:1px solid #c8dace;border-radius:6px;padding:10px;margin-bottom:10px">
+          <div style="font-size:11px;font-weight:700;color:#6a8a72;margin-bottom:6px;letter-spacing:.5px">➕ AGREGAR PERFIL QUE FALTÓ</div>
+          <div class="row">
+            <div class="fg" style="min-width:100px">
+              <label>Línea</label>
+              <select id="add-linea" onchange="actualizarAddPerfil()">
+                <option value="herrero">Herrero</option>
+                <option value="modena" selected>Módena</option>
+                <option value="premium">Premium</option>
+                <option value="a30">A30 New</option>
+                <option value="estructural">Estructural</option>
+              </select>
+            </div>
+            <div class="fg" style="flex:1;min-width:160px">
+              <label>Perfil</label>
+              <select id="add-perfil"></select>
+            </div>
+            <div class="fg" style="width:60px">
+              <label>Barras</label>
+              <input id="add-barras" type="number" value="1" min="1" style="width:60px;text-align:center">
+            </div>
+            <button class="btn" style="padding:7px 12px" onclick="agregarAPreview()">+ Agregar</button>
+          </div>
+        </div>
+
         <div style="display:flex;gap:8px;margin-top:8px">
           <button class="btn" onclick="confirmarIA()">✅ Confirmar y cargar</button>
           <button class="btn btn-g" onclick="cancelarIA()">✕ Cancelar</button>
@@ -304,7 +346,7 @@ const CATS={herrero:CH,modena:CM,premium:CPR,a30:CA,estructural:CE2};
 // ============================================================
 let items=[];
 let ivaOn=false;
-let pendientes=null;
+let pendientes=[];
 let archivoData=null;
 
 // ============================================================
@@ -314,6 +356,7 @@ window.onload=()=>{
   document.getElementById('fecha').value=new Date().toISOString().split('T')[0];
   actualizarManual();
   actualizarIA();
+  actualizarAddPerfil();
 };
 
 function llenarColores(selId,linea){
@@ -322,8 +365,8 @@ function llenarColores(selId,linea){
   sel.innerHTML=cols.map(([c,n])=>`<option value="${c}">${c} – ${n}</option>`).join('');
 }
 
-function llenarPerfiles(linea){
-  const sel=document.getElementById('m-perfil');
+function llenarPerfiles(linea,selId){
+  const sel=document.getElementById(selId);
   sel.innerHTML='<option value="">— Seleccionar —</option>'+
     Object.entries(CATS[linea])
       .sort((a,b)=>a[0].localeCompare(b[0],undefined,{numeric:true}))
@@ -334,13 +377,18 @@ function llenarPerfiles(linea){
 function actualizarManual(){
   const l=document.getElementById('m-linea').value;
   llenarColores('m-color',l);
-  llenarPerfiles(l);
+  llenarPerfiles(l,'m-perfil');
   document.getElementById('m-lista-wrap').style.display=l==='premium'?'none':'';
 }
 
 function actualizarIA(){
   const l=document.getElementById('ia-linea').value;
   llenarColores('ia-color',l);
+}
+
+function actualizarAddPerfil(){
+  const l=document.getElementById('add-linea').value;
+  llenarPerfiles(l,'add-perfil');
 }
 
 // ============================================================
@@ -415,7 +463,7 @@ function quitarArchivo(){
 function setStatus(msg,tipo){
   const el=document.getElementById('ia-status');
   el.className='status '+tipo;
-  el.textContent=msg;
+  el.innerHTML=msg;
   el.style.display='';
 }
 
@@ -462,28 +510,76 @@ async function analizarFoto(){
   btn.disabled=false;btn.textContent='⚡ Analizar y cargar';
 }
 
+// ============================================================
+// PREVIEW EDITABLE
+// ============================================================
 function mostrarPreview(lista){
-  pendientes=lista;
+  pendientes=lista.map((it,i)=>({...it,_id:i}));
+  renderPreview();
   const ok=lista.filter(i=>i.reconocido&&CATS[i.linea]?.[i.codigo]).length;
-  setStatus(`✅ ${lista.length} perfiles reconocidos, ${ok} verificados. Confirmá para cargar.`,'ok');
+  setStatus(`✅ ${lista.length} perfiles reconocidos, ${ok} verificados. Revisá y confirmá.`,'ok');
+  document.getElementById('ia-preview').style.display='';
+  actualizarAddPerfil();
+}
+
+function renderPreview(){
   const tbody=document.getElementById('preview-body');
-  tbody.innerHTML=lista.map((it,i)=>{
+  tbody.innerHTML=pendientes.map((it)=>{
     const existe=CATS[it.linea]?.[it.codigo];
     const bg=!existe?'background:#fff8e1':'';
-    return `<tr style="${bg}">
-      <td class="cod">${it.codigo}</td>
-      <td>${it.descripcion}</td>
-      <td class="mut">${LINEAS[it.linea]?.n||it.linea}</td>
-      <td style="text-align:center">${it.barras}</td>
-      <td class="mut">${it.color}</td>
-      <td>${!existe?'⚠ No encontrado':it.reconocido?'✅ OK':'⚠ Revisar'}${it.nota?`<br><small style="color:#888">${it.nota}</small>`:''}</td>
+    const estado=!existe?'⚠ No encontrado':it.reconocido?'✅ OK':'⚠ Revisar';
+    const nota=it.nota?`<br><small style="color:#888">${it.nota}</small>`:'';
+    // selector de línea
+    const linSel=Object.keys(LINEAS).map(k=>`<option value="${k}"${k===it.linea?' selected':''}>${LINEAS[k].n}</option>`).join('');
+    return `<tr style="${bg}" id="prev-row-${it._id}">
+      <td><input class="edit-inp" style="width:80px" value="${it.codigo}" onchange="editarPrev(${it._id},'codigo',this.value)"></td>
+      <td class="mut" style="font-size:11px">${existe?existe[1]:it.descripcion}</td>
+      <td><select class="edit-sel" onchange="editarPrev(${it._id},'linea',this.value)">${linSel}</select></td>
+      <td><input class="edit-inp" type="number" min="1" style="width:50px;text-align:center" value="${it.barras}" onchange="editarPrev(${it._id},'barras',this.value)"></td>
+      <td>${estado}${nota}</td>
+      <td><button class="del-btn" onclick="eliminarPrev(${it._id})">✕</button></td>
     </tr>`;
   }).join('');
-  document.getElementById('ia-preview').style.display='';
+}
+
+function editarPrev(id,campo,valor){
+  const it=pendientes.find(p=>p._id===id);
+  if(!it)return;
+  if(campo==='barras')it.barras=parseInt(valor)||1;
+  else it[campo]=valor.trim();
+  // refrescar descripción y estado sin re-renderizar todo
+  const existe=CATS[it.linea]?.[it.codigo];
+  const row=document.getElementById('prev-row-'+id);
+  if(row){
+    row.style.background=existe?'':'#fff8e1';
+    const celdas=row.querySelectorAll('td');
+    if(celdas[1])celdas[1].textContent=existe?existe[1]:it.descripcion;
+    if(celdas[4])celdas[4].textContent=!existe?'⚠ No encontrado':it.reconocido?'✅ OK':'⚠ Revisar';
+  }
+}
+
+function eliminarPrev(id){
+  pendientes=pendientes.filter(p=>p._id!==id);
+  renderPreview();
+}
+
+function agregarAPreview(){
+  const l=document.getElementById('add-linea').value;
+  const cod=document.getElementById('add-perfil').value;
+  const b=parseInt(document.getElementById('add-barras').value)||1;
+  if(!cod||!CATS[l][cod])return;
+  const[,d]=CATS[l][cod];
+  const c=document.getElementById('ia-color').value;
+  const ls=document.getElementById('ia-lista').value;
+  const newId=Date.now();
+  pendientes.push({_id:newId,linea:l,codigo:cod,descripcion:d,barras:b,color:c,lista:ls,reconocido:true,nota:''});
+  renderPreview();
+  document.getElementById('add-perfil').value='';
+  document.getElementById('add-barras').value=1;
 }
 
 function confirmarIA(){
-  if(!pendientes)return;
+  if(!pendientes.length)return;
   let n=0;
   pendientes.forEach(it=>{
     const cat=CATS[it.linea];if(!cat||!cat[it.codigo])return;
@@ -491,7 +587,7 @@ function confirmarIA(){
     items.push({id:Date.now()+Math.random(),linea:it.linea,color:it.color,lista:it.lista,codigo:it.codigo,desc:d,pesoKgm:p,barras:parseInt(it.barras)||1,lb:LINEAS[it.linea].l,precio:gp(it.linea,it.lista,it.color)});
     n++;
   });
-  pendientes=null;
+  pendientes=[];
   document.getElementById('ia-preview').style.display='none';
   document.getElementById('ia-txt').value='';
   quitarArchivo();
@@ -500,7 +596,7 @@ function confirmarIA(){
 }
 
 function cancelarIA(){
-  pendientes=null;
+  pendientes=[];
   document.getElementById('ia-preview').style.display='none';
   document.getElementById('ia-status').style.display='none';
 }
