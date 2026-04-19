@@ -325,8 +325,16 @@ asigná el color correcto a cada ítem según el grupo al que pertenece.
 
 CATÁLOGO:${CATALOGO}
 
+CRÍTICO — el campo "color" SIEMPRE debe ser el CÓDIGO NUMÉRICO, nunca el nombre:
+- natural→"001", blanco→"002", negro→"003", bronce→"004", madera→"005"
+- anod.natural→"006", anod.bronce cl.→"007", anod.bronce osc.→"008"
+- anod.negro→"009", peltre→"010", champagne→"011", especial→"012"
+- Para estructural: natural→"013", blanco→"014", negro→"015", bronce→"016", madera→"017"
+- Para premium: blanco→"blanco", negro→"negro"
+Si no se menciona color → usá ${colorDefault}
+
 Formato requerido:
-[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto del catálogo","descripcion":"descripción","barras":1,"color":"código de color ej:002","lista":"${listaDefault}","reconocido":true,"nota":"explicá color detectado si difiere del default"}]
+[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto del catálogo","descripcion":"descripción","barras":1,"color":"002","lista":"${listaDefault}","reconocido":true,"nota":""}]
 
 Defaults: linea=${lineaDefault}, color=${colorDefault}, lista=${listaDefault}.
 
@@ -408,8 +416,16 @@ asigná el color correcto a cada ítem según el grupo al que pertenece.
 
 CATÁLOGO:${CATALOGO}
 
+CRÍTICO — el campo "color" SIEMPRE debe ser el CÓDIGO NUMÉRICO, nunca el nombre:
+- natural→"001", blanco→"002", negro→"003", bronce→"004", madera→"005"
+- anod.natural→"006", anod.bronce cl.→"007", anod.bronce osc.→"008"
+- anod.negro→"009", peltre→"010", champagne→"011", especial→"012"
+- Para estructural: natural→"013", blanco→"014", negro→"015"
+- Para premium: blanco→"blanco", negro→"negro"
+Si no se menciona color → usá ${colorDefault}
+
 Formato requerido — devolvé SOLO este JSON array, sin texto extra:
-[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto del catálogo","descripcion":"descripción","barras":1,"color":"código de color ej:002","lista":"${listaDefault}","reconocido":true,"nota":"explicá color detectado si difiere del default"}]
+[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto del catálogo","descripcion":"descripción","barras":1,"color":"002","lista":"${listaDefault}","reconocido":true,"nota":""}]
 
 Defaults: linea=${lineaDefault}, color=${colorDefault}, lista=${listaDefault}.`;
 
