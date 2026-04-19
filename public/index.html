@@ -345,6 +345,17 @@ const CATS={herrero:CH,modena:CM,premium:CPR,a30:CA,estructural:CE2};
 // ============================================================
 // ESTADO
 // ============================================================
+
+const CNOMBRES={
+  '001':'Natural','002':'Blanco','003':'Negro','004':'Bronce','005':'Madera',
+  '006':'An.Natural','007':'An.Bce Cl.','008':'An.Bce Osc.','009':'An.Negro',
+  '010':'Peltre','011':'Champagne','012':'Especial',
+  '013':'Natural','014':'Blanco','015':'Negro','016':'Bronce','017':'Madera',
+  '018':'An.Natural','019':'An.Bce Cl.','020':'An.Bce Osc.','021':'An.Negro',
+  '022':'Peltre','023':'Champagne','024':'Especial',
+  'blanco':'Blanco','negro':'Negro'
+};
+const cn=c=>CNOMBRES[c]||c;
 let items=[];
 let facturaMode='siniva'; // siniva | coniva
 let pendientes=[];
@@ -615,15 +626,15 @@ function renderTabla(){
   if(!items.length)return;
   tbody.innerHTML=items.map(it=>{
     const kg=it.pesoKgm*it.barras*it.lb,s=kg*it.precio;
-    return `<tr>
+    return `<tr data-id="${it.id}">
       <td class="mut">${LINEAS[it.linea].n}</td>
       <td class="cod">${it.codigo}</td>
       <td>${it.desc}</td>
-      <td class="mut">${it.color}</td>
+      <td class="mut" title="${it.color}">${cn(it.color)}</td>
       <td><input type="number" class="barras-inp" style="width:58px" value="${it.pesoKgm.toFixed(3)}" step="0.001" min="0.001" onchange="cambiarPeso(${it.id},this.value)" title="Editar kg/m"></td>
       <td><input type="number" class="barras-inp" value="${it.barras}" min="1" onchange="cambiarBarras(${it.id},this.value)"></td>
       <td class="mut">${it.lb.toFixed(2)}</td>
-      <td>${kg.toFixed(3)}</td>
+      <td class="kg-tot">${kg.toFixed(3)}</td>
       <td><input type="number" class="barras-inp" style="width:72px" value="${it.precio}" min="0" step="1" onchange="cambiarPrecio(${it.id},this.value)" title="Editar $/kg"></td>
       <td class="sub-val">$ ${fm(s)}</td>
       <td><button class="del-btn" onclick="eliminar(${it.id})">✕</button></td>
@@ -633,8 +644,35 @@ function renderTabla(){
 
 function eliminar(id){items=items.filter(i=>i.id!==id);renderTabla();recalcular();}
 function cambiarBarras(id,v){const it=items.find(i=>i.id===id);if(it){it.barras=parseInt(v)||1;recalcular();}}
-function cambiarPeso(id,v){const it=items.find(i=>i.id===id);if(it){it.pesoKgm=parseFloat(v)||it.pesoKgm;recalcular();}}
-function cambiarPrecio(id,v){const it=items.find(i=>i.id===id);if(it){it.precio=parseFloat(v)||it.precio;recalcular();}}
+function cambiarPrecio(id,v){
+  const it=items.find(i=>i.id===id);
+  if(!it)return;
+  it.precio=parseFloat(v)||it.precio;
+  // actualizar subtotal de esa fila sin re-renderizar
+  const kg=it.pesoKgm*it.barras*it.lb;
+  const s=kg*it.precio;
+  const row=document.querySelector(`tr[data-id="${id}"]`);
+  if(row){
+    const subCell=row.querySelector('.sub-val');
+    if(subCell)subCell.textContent='$ '+fm(s);
+  }
+  recalcular();
+}
+function cambiarPeso(id,v){
+  const it=items.find(i=>i.id===id);
+  if(!it)return;
+  it.pesoKgm=parseFloat(v)||it.pesoKgm;
+  const kg=it.pesoKgm*it.barras*it.lb;
+  const s=kg*it.precio;
+  const row=document.querySelector(`tr[data-id="${id}"]`);
+  if(row){
+    const kgCell=row.querySelector('.kg-tot');
+    if(kgCell)kgCell.textContent=kg.toFixed(3);
+    const subCell=row.querySelector('.sub-val');
+    if(subCell)subCell.textContent='$ '+fm(s);
+  }
+  recalcular();
+}
 
 // ============================================================
 // RECALCULAR
@@ -683,7 +721,7 @@ function recalcular(){
       <td class="mut">${LINEAS[it.linea].n}</td>
       <td class="cod">${it.codigo}</td>
       <td>${it.desc}</td>
-      <td class="mut">${it.color}</td>
+      <td class="mut" title="${it.color}">${cn(it.color)}</td>
       <td style="text-align:center">${it.barras}</td>
       <td>${kg.toFixed(3)} kg</td>
       <td>$ ${fm(it.precio)}</td>
