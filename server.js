@@ -296,15 +296,37 @@ HERRERO — dos formas de abreviar:
 CANTIDADES — puede venir en cualquier formato:
 - "x4", "4u", "4 barras", "- 4", "x 4", "(4)", o simplemente un número al lado del código
 
+COLORES — cada ítem puede tener su propio color, detectalo en el texto:
+
+TABLA DE COLORES (para identificar el color mencionado en el texto):
+- "natural", "natu", "nat" → código 001
+- "blanco", "blanc", "bco", "wh", "white" → código 002
+- "negro", "negr", "ng", "black" → código 003
+- "bronce", "bronc", "bce" → código 004
+- "madera", "made", "mad", "wood" → código 005
+- "anodizado natural", "anod nat", "an" → código 006
+- "anodizado bronce claro", "anod bce cl", "abc" → código 007
+- "anodizado bronce oscuro", "anod bce osc", "abo" → código 008
+- "anodizado negro", "anod neg", "ang" → código 009
+- "anodizado peltre", "peltre", "plt" → código 010
+- "anodizado champagne", "champagne", "champ" → código 011
+- "especial" → código 012
+Para línea ESTRUCTURAL los mismos colores pero con códigos 013-024 (mismo orden).
+Para línea PREMIUM solo: "blanco"→"blanco", "negro"→"negro".
+Si no se menciona color para un ítem, usá el colorDefault.
+
 DESCRIPCIONES — si no hay código, buscá por descripción aproximada en el catálogo:
 - "marco corrediza" → buscar en la línea indicada
 - "DVH" significa doble vidrio hermético
 - "parante lateral/central", "zócalo", "cabezal", "jamba", "umbral", "dintel" son términos técnicos válidos
 
+IMPORTANTE: Si la lista agrupa perfiles por color (ej: "BLANCO: 6200x4, 6201x4 / NEGRO: 103x6"), 
+asigná el color correcto a cada ítem según el grupo al que pertenece.
+
 CATÁLOGO:${CATALOGO}
 
 Formato requerido:
-[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto del catálogo","descripcion":"descripción","barras":1,"color":"${colorDefault}","lista":"${listaDefault}","reconocido":true,"nota":"explicá si interpretaste una abreviación o descripción"}]
+[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto del catálogo","descripcion":"descripción","barras":1,"color":"código de color ej:002","lista":"${listaDefault}","reconocido":true,"nota":"explicá color detectado si difiere del default"}]
 
 Defaults: linea=${lineaDefault}, color=${colorDefault}, lista=${listaDefault}.
 
@@ -359,13 +381,35 @@ HERRERO — dos formas de abreviar:
 CANTIDADES — puede venir en cualquier formato:
 - "x4", "4u", "4 barras", "- 4", "x 4", "(4)", o un número al lado del código
 
+COLORES — cada ítem puede tener su propio color, detectalo en el texto o imagen:
+
+TABLA DE COLORES (para identificar el color mencionado en el texto):
+- "natural", "natu", "nat" → código 001
+- "blanco", "blanc", "bco", "wh", "white" → código 002
+- "negro", "negr", "ng", "black" → código 003
+- "bronce", "bronc", "bce" → código 004
+- "madera", "made", "mad", "wood" → código 005
+- "anodizado natural", "anod nat", "an" → código 006
+- "anodizado bronce claro", "anod bce cl", "abc" → código 007
+- "anodizado bronce oscuro", "anod bce osc", "abo" → código 008
+- "anodizado negro", "anod neg", "ang" → código 009
+- "anodizado peltre", "peltre", "plt" → código 010
+- "anodizado champagne", "champagne", "champ" → código 011
+- "especial" → código 012
+Para línea ESTRUCTURAL los mismos colores pero con códigos 013-024 (mismo orden).
+Para línea PREMIUM solo: "blanco"→"blanco", "negro"→"negro".
+Si no se menciona color para un ítem, usá el colorDefault.
+
 DESCRIPCIONES — si no hay código claro, interpretá por descripción:
 - "marco corrediza", "parante lateral/central", "zócalo", "cabezal", "jamba", "umbral", "dintel", "DVH"
+
+IMPORTANTE: Si la lista agrupa perfiles por color (ej: "BLANCO: 6200x4 / NEGRO: 103x6"),
+asigná el color correcto a cada ítem según el grupo al que pertenece.
 
 CATÁLOGO:${CATALOGO}
 
 Formato requerido — devolvé SOLO este JSON array, sin texto extra:
-[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto del catálogo","descripcion":"descripción","barras":1,"color":"${colorDefault}","lista":"${listaDefault}","reconocido":true,"nota":"explicá si interpretaste abreviación o hubo duda"}]
+[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto del catálogo","descripcion":"descripción","barras":1,"color":"código de color ej:002","lista":"${listaDefault}","reconocido":true,"nota":"explicá color detectado si difiere del default"}]
 
 Defaults: linea=${lineaDefault}, color=${colorDefault}, lista=${listaDefault}.`;
 
