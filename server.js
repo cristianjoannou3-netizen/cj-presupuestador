@@ -282,12 +282,29 @@ app.post('/api/analizar-texto', async (req, res) => {
     const { texto, lineaDefault, colorDefault, listaDefault } = req.body;
     const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
-    const prompt = `Sos asistente de carpintería de aluminio. Devolvé SOLO un JSON array sin texto extra ni markdown.
+    const prompt = `Sos asistente técnico de carpintería de aluminio argentina. Devolvé SOLO un JSON array sin texto extra ni markdown.
+
+REGLAS DE INTERPRETACIÓN DE CÓDIGOS (muy importante):
+
+MÓDENA — los carpinteros suelen omitir el "6" inicial:
+- Si ves 200, 201, 203, 204, 207, 208, 209, 210, 211, 212, 213, 214, 215, 216, 217, 218, 219, 220, 221, 222, 224, 225, 226, 227, 228, 229, 240, 241, 243, 244, 245, 246, 248, 249, 250, 251, 252, 253, 254, 255, 256, 257, 258, 259, 260, 261, 262, 263, 264, 265, 277, 278, 279 → agregale el 6 adelante (ej: 200 → 6200)
+
+HERRERO — dos formas de abreviar:
+- Números del 1 al 9 solos (1,2,3,4,5,7,8) → son 101,102,103,104,105,107,108
+- Con 19 adelante: 1900→100, 1901→101, 1902→102, 1903→103, 1904→104, 1905→105, 1907→107, 1908→108
+
+CANTIDADES — puede venir en cualquier formato:
+- "x4", "4u", "4 barras", "- 4", "x 4", "(4)", o simplemente un número al lado del código
+
+DESCRIPCIONES — si no hay código, buscá por descripción aproximada en el catálogo:
+- "marco corrediza" → buscar en la línea indicada
+- "DVH" significa doble vidrio hermético
+- "parante lateral/central", "zócalo", "cabezal", "jamba", "umbral", "dintel" son términos técnicos válidos
 
 CATÁLOGO:${CATALOGO}
 
 Formato requerido:
-[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto","descripcion":"descripción","barras":1,"color":"${colorDefault}","lista":"${listaDefault}","reconocido":true,"nota":""}]
+[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto del catálogo","descripcion":"descripción","barras":1,"color":"${colorDefault}","lista":"${listaDefault}","reconocido":true,"nota":"explicá si interpretaste una abreviación o descripción"}]
 
 Defaults: linea=${lineaDefault}, color=${colorDefault}, lista=${listaDefault}.
 
@@ -322,22 +339,33 @@ app.post('/api/analizar-imagen', upload.single('imagen'), async (req, res) => {
     const b64 = file.buffer.toString('base64');
     const mediaType = file.mimetype;
 
-    // MEJORA: prompt optimizado para escritura manuscrita de carpintero argentino
     const prompt = `Sos asistente técnico de carpintería de aluminio argentina. Estás leyendo una lista ESCRITA A MANO por un carpintero argentino.
 
 INSTRUCCIONES PARA LECTURA MANUSCRITA:
 - La escritura puede ser poco clara, con letras y números similares entre sí
 - Confusiones frecuentes: 0/6, 1/7, 3/8, 4/9, B/8, Z/2
-- Los códigos Módena empiezan con 6 (ej: 6200, 6201, 6207) — si ves un número de 4 dígitos que empieza con "6", es casi seguro línea Módena
-- Los códigos Herrero son números cortos (17, 39, 100, 101, 102, 103, 104...)
-- Las cantidades pueden estar escritas como: "x3", "3u", "3 barras", "- 3", o simplemente un número al lado del código
-- Si un código es ambiguo, elegí el más lógico según la línea default y anotalo en "nota"
 - Extraé TODOS los códigos y cantidades visibles, aunque la escritura sea difícil
+
+REGLAS DE INTERPRETACIÓN DE CÓDIGOS (muy importante):
+
+MÓDENA — los carpinteros suelen omitir el "6" inicial:
+- Si ves 200, 201, 203, 204, 207, 208, 209... → agregale el 6 adelante (ej: 200 → 6200, 207 → 6207)
+- Si ves un número de 3 dígitos entre 200-909 y la línea default es Módena → casi seguro le falta el 6
+
+HERRERO — dos formas de abreviar:
+- Números solos del 1 al 9 (1,2,3,4,5,7,8) → son 101,102,103,104,105,107,108
+- Con 19 adelante: 1900→100, 1901→101, 1902→102, 1903→103, 1904→104, 1905→105, 1907→107
+
+CANTIDADES — puede venir en cualquier formato:
+- "x4", "4u", "4 barras", "- 4", "x 4", "(4)", o un número al lado del código
+
+DESCRIPCIONES — si no hay código claro, interpretá por descripción:
+- "marco corrediza", "parante lateral/central", "zócalo", "cabezal", "jamba", "umbral", "dintel", "DVH"
 
 CATÁLOGO:${CATALOGO}
 
 Formato requerido — devolvé SOLO este JSON array, sin texto extra:
-[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto del catálogo","descripcion":"descripción","barras":1,"color":"${colorDefault}","lista":"${listaDefault}","reconocido":true,"nota":"explicá si hubo duda de lectura"}]
+[{"linea":"herrero|modena|premium|a30|estructural","codigo":"código exacto del catálogo","descripcion":"descripción","barras":1,"color":"${colorDefault}","lista":"${listaDefault}","reconocido":true,"nota":"explicá si interpretaste abreviación o hubo duda"}]
 
 Defaults: linea=${lineaDefault}, color=${colorDefault}, lista=${listaDefault}.`;
 
@@ -361,6 +389,147 @@ Defaults: linea=${lineaDefault}, color=${colorDefault}, lista=${listaDefault}.`;
     res.json({ ok: true, perfiles: parsed });
   } catch (e) {
     res.status(500).json({ ok: false, error: e.message });
+  }
+});
+
+// Endpoint generar PDF
+app.post('/api/generar-pdf', async (req, res) => {
+  try {
+    const { cliente, items, totales, facturaMode } = req.body;
+    const PDFDocument = require('pdfkit');
+    const doc = new PDFDocument({ size: 'A4', margin: 40 });
+
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="presupuesto-${cliente.nro}.pdf"`);
+    doc.pipe(res);
+
+    const AZUL_OSC  = '#0a1628';
+    const AZUL_MED  = '#1565c0';
+    const AZUL_SUAVE= '#f0f4ff';
+    const GRIS      = '#5a7090';
+    const W = 515;
+
+    // ── ENCABEZADO ──
+    doc.rect(0, 0, 595, 90).fill(AZUL_OSC);
+    doc.fontSize(22).font('Helvetica-Bold').fillColor('white')
+       .text('CJ METALES', 40, 22);
+    doc.fontSize(8).font('Helvetica').fillColor('#a8c4e8')
+       .text('Carpintería de Aluminio · Perfiles · Accesorios', 40, 48);
+    doc.fontSize(7.5).fillColor('#8ab0d0')
+       .text('Dean Funes 779, Rosario, Santa Fe  CP 2000  ·  Tel: 341-598-5683', 40, 62);
+
+    doc.fontSize(9).font('Helvetica-Bold').fillColor('#90b8e0')
+       .text('PRESUPUESTO', 40, 22, { align: 'right', width: W });
+    doc.fontSize(20).fillColor('white')
+       .text(`N° ${cliente.nro}`, 40, 35, { align: 'right', width: W });
+    doc.fontSize(8.5).font('Helvetica').fillColor('#8ab0d0')
+       .text(`Fecha: ${cliente.fecha}`, 40, 62, { align: 'right', width: W });
+
+    doc.rect(0, 88, 595, 3).fill(AZUL_MED);
+
+    // ── CLIENTE ──
+    let y = 105;
+    doc.rect(40, y, W, 72).fill(AZUL_SUAVE).stroke('#c5d8f0');
+    const filas = [
+      ['CLIENTE', cliente.nombre],
+      ['TELÉFONO', cliente.tel],
+      ['DIRECCIÓN / OBRA', cliente.dir],
+      ['OBSERVACIONES', cliente.obs],
+    ];
+    filas.forEach(([lbl, val], i) => {
+      doc.fontSize(7.5).font('Helvetica-Bold').fillColor(GRIS)
+         .text(lbl, 48, y + 5 + i*17);
+      doc.fontSize(9).font('Helvetica').fillColor('#1a2d40')
+         .text(val || '-', 155, y + 4 + i*17, { width: 380 });
+    });
+    doc.moveTo(40, y+72).lineTo(555, y+72).lineWidth(1.5).stroke(AZUL_MED);
+
+    // ── TABLA PERFILES ──
+    y += 85;
+    const cols = [50, 38, 135, 48, 30, 35, 30, 38, 44, 47];
+    const hdrs = ['Línea','Código','Descripción','Color','kg/m','Barras','m/b','kg tot','$/kg','Subtotal'];
+
+    // Header tabla
+    doc.rect(40, y, W, 20).fill(AZUL_MED);
+    let x = 40;
+    hdrs.forEach((h, i) => {
+      doc.fontSize(7.5).font('Helvetica-Bold').fillColor('white')
+         .text(h, x+2, y+6, { width: cols[i]-4, align: i>3 ? 'right' : 'left' });
+      x += cols[i];
+    });
+    y += 20;
+
+    // Filas
+    items.forEach((it, idx) => {
+      const bg = idx % 2 === 0 ? AZUL_SUAVE : '#f8faff';
+      doc.rect(40, y, W, 16).fill(bg);
+      x = 40;
+      const vals = [
+        it.linea, it.codigo, it.desc, it.color,
+        it.pesoKgm.toFixed(3), String(it.barras), it.lb.toFixed(2),
+        it.kg.toFixed(3),
+        `$${Math.round(it.precio).toLocaleString('es-AR')}`,
+        `$${Math.round(it.subtotal).toLocaleString('es-AR')}`
+      ];
+      vals.forEach((v, i) => {
+        const isNum = i > 3;
+        const color = i === 1 ? AZUL_MED : '#1a2d40';
+        doc.fontSize(i===2?7:8).font(i===1||i===9 ? 'Helvetica-Bold' : 'Helvetica')
+           .fillColor(color)
+           .text(v, x+2, y+4, { width: cols[i]-4, align: isNum ? 'right' : 'left' });
+        x += cols[i];
+      });
+      doc.moveTo(40,y+16).lineTo(555,y+16).lineWidth(0.3).stroke('#c5d8f0');
+      y += 16;
+
+      // Nueva página si hace falta
+      if(y > 730){ doc.addPage(); y = 40; }
+    });
+
+    // ── TOTALES ──
+    y += 8;
+    const t = totales;
+    const fm = n => Math.round(n).toLocaleString('es-AR');
+
+    if(facturaMode === 'coniva'){
+      [[`Base imponible`, fm(t.baseImponible)],
+       [`IVA 21%`, fm(t.ivaV)]].forEach(([lbl,val]) => {
+        doc.fontSize(9).font('Helvetica').fillColor(GRIS)
+           .text(lbl, 350, y, { width: 155, align: 'right' });
+        doc.text(`$ ${val}`, 350, y, { width: W-315, align: 'right' });
+        y += 14;
+      });
+    } else {
+      doc.fontSize(9).font('Helvetica').fillColor(GRIS)
+         .text('Subtotal', 350, y, { width: 155, align: 'right' });
+      doc.text(`$ ${fm(t.sub)}`, 350, y, { width: W-315, align: 'right' });
+      y += 14;
+    }
+    if(t.mrg > 0){
+      doc.fontSize(9).font('Helvetica').fillColor(GRIS)
+         .text(`Margen ${t.mrg}%`, 350, y, { width: 155, align: 'right' });
+      doc.text(`$ ${fm(t.mrgV)}`, 350, y, { width: W-315, align: 'right' });
+      y += 14;
+    }
+
+    // Total final
+    doc.rect(350, y, W-310, 22).fill(AZUL_OSC);
+    doc.fontSize(11).font('Helvetica-Bold').fillColor('white')
+       .text('TOTAL', 352, y+5, { width: 150, align: 'right' });
+    doc.fontSize(13).fillColor('white')
+       .text(`$ ${fm(t.tot)}`, 352, y+4, { width: W-316, align: 'right' });
+    y += 30;
+
+    // ── PIE ──
+    doc.moveTo(40, y+10).lineTo(555, y+10).lineWidth(1.5).stroke(AZUL_MED);
+    doc.fontSize(7.5).font('Helvetica').fillColor(GRIS)
+       .text('CJ Metales · Dean Funes 779, Rosario', 40, y+15)
+       .text('Presupuesto válido 48 hs. Precios sujetos a cambio.', 40, y+15, { align: 'center', width: W })
+       .text(`Pres. N° ${cliente.nro} · ${cliente.fecha}`, 40, y+15, { align: 'right', width: W });
+
+    doc.end();
+  } catch(e) {
+    if(!res.headersSent) res.status(500).json({ ok:false, error: e.message });
   }
 });
 
