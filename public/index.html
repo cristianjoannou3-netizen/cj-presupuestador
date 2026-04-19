@@ -237,6 +237,7 @@ input[type=number].barras-inp{width:50px;text-align:center;padding:3px 4px}
                 <th>Código</th>
                 <th>Descripción</th>
                 <th>Línea</th>
+                <th style="width:80px">Color</th>
                 <th style="width:60px">Barras</th>
                 <th>Estado</th>
                 <th style="width:30px"></th>
@@ -545,10 +546,13 @@ function renderPreview(){
     const nota=it.nota?`<br><small style="color:#888">${it.nota}</small>`:'';
     // selector de línea
     const linSel=Object.keys(LINEAS).map(k=>`<option value="${k}"${k===it.linea?' selected':''}>${LINEAS[k].n}</option>`).join('');
+    const colores=gc(it.linea);
+    const colorSel=colores.map(([c,n])=>`<option value="${c}"${c===it.color?' selected':''}>${n}</option>`).join('');
     return `<tr style="${bg}" id="prev-row-${it._id}">
       <td><input class="edit-inp" style="width:80px" value="${it.codigo}" onchange="editarPrev(${it._id},'codigo',this.value)"></td>
       <td class="mut" style="font-size:11px">${existe?existe[1]:it.descripcion}</td>
       <td><select class="edit-sel" onchange="editarPrev(${it._id},'linea',this.value)">${linSel}</select></td>
+      <td><select class="edit-sel" style="min-width:90px" onchange="editarPrev(${it._id},'color',this.value)">${colorSel}</select></td>
       <td><input class="edit-inp" type="number" min="1" style="width:50px;text-align:center" value="${it.barras}" onchange="editarPrev(${it._id},'barras',this.value)"></td>
       <td>${estado}${nota}</td>
       <td><button class="del-btn" onclick="eliminarPrev(${it._id})">✕</button></td>
