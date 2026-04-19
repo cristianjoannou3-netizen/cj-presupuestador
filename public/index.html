@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -7,67 +6,67 @@
 <title>CJ Metales – Presupuestador</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:system-ui,sans-serif;background:#f0f4f1;color:#1a2d20;min-height:100vh;padding-bottom:60px}
-header{background:linear-gradient(135deg,#0d1f14,#1a6b3a,#1b8c7a);padding:14px 20px;display:flex;align-items:center;gap:14px;margin-bottom:16px}
+body{font-family:system-ui,sans-serif;background:#f0f4ff;color:#1a2d40;min-height:100vh;padding-bottom:60px}
+header{background:linear-gradient(135deg,#0a1628,#1565c0,#1e3a5f);padding:14px 20px;display:flex;align-items:center;gap:14px;margin-bottom:16px}
 .logo{font-weight:700;font-size:1.5rem;color:#fff;letter-spacing:2px;line-height:1}
 .logo-sub{font-size:.65rem;color:rgba(255,255,255,.45);letter-spacing:3px}
 .sep{width:1px;height:28px;background:rgba(255,255,255,.2)}
 .titulo{font-size:13px;color:rgba(255,255,255,.8)}
 .app{max-width:960px;margin:0 auto;padding:0 10px}
-.card{background:#fff;border-radius:10px;box-shadow:0 3px 18px rgba(13,31,20,.09);margin-bottom:14px;border:1px solid #c8dace;overflow:hidden}
-.card-h{background:linear-gradient(90deg,#1a6b3a,#2d8f52);color:#fff;padding:10px 16px;font-weight:700;font-size:.88rem;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
+.card{background:#fff;border-radius:10px;box-shadow:0 3px 18px rgba(13,31,20,.09);margin-bottom:14px;border:1px solid #c5d8f0;overflow:hidden}
+.card-h{background:linear-gradient(90deg,#1565c0,#1a5fa8);color:#fff;padding:10px 16px;font-weight:700;font-size:.88rem;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:8px}
 .badge{background:rgba(255,255,255,.2);border-radius:20px;font-size:.7rem;padding:2px 9px}
 .card-b{padding:14px 16px}
 .row{display:flex;flex-wrap:wrap;gap:8px;align-items:flex-end}
 .fg{display:flex;flex-direction:column;gap:3px}
-label{font-size:11px;font-weight:600;color:#6a8a72;letter-spacing:.5px;text-transform:uppercase}
-input,select,textarea{border:1px solid #c8dace;border-radius:6px;padding:7px 10px;font-family:inherit;font-size:.88rem;color:#1a2d20;background:#e8f5ec;outline:none;width:100%}
-input:focus,select:focus,textarea:focus{border-color:#1a6b3a;background:#fff}
-.btn{background:#1a6b3a;color:#fff;border:none;border-radius:6px;padding:8px 14px;font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer}
-.btn:hover{background:#2d8f52}
+label{font-size:11px;font-weight:600;color:#5a7090;letter-spacing:.5px;text-transform:uppercase}
+input,select,textarea{border:1px solid #c5d8f0;border-radius:6px;padding:7px 10px;font-family:inherit;font-size:.88rem;color:#1a2d40;background:#f0f4ff;outline:none;width:100%}
+input:focus,select:focus,textarea:focus{border-color:#1565c0;background:#fff}
+.btn{background:#1565c0;color:#fff;border:none;border-radius:6px;padding:8px 14px;font-family:inherit;font-weight:700;font-size:.85rem;cursor:pointer}
+.btn:hover{background:#1a5fa8}
 .btn:disabled{opacity:.5;cursor:not-allowed}
-.btn-g{background:#f0f4f1;color:#1a2d20;border:1px solid #c8dace}
-.btn-g:hover{background:#e0f0e6}
-.tab-btn{font-size:12px;padding:5px 12px;border-radius:6px;border:1px solid #c8dace;background:#f0f4f1;color:#1a2d20;cursor:pointer;font-family:inherit}
-.tab-btn.active{background:#1a6b3a;color:#fff;border-color:#1a6b3a}
+.btn-g{background:#f0f4ff;color:#1a2d40;border:1px solid #c5d8f0}
+.btn-g:hover{background:#d8eaff}
+.tab-btn{font-size:12px;padding:5px 12px;border-radius:6px;border:1px solid #c5d8f0;background:#f0f4ff;color:#1a2d40;cursor:pointer;font-family:inherit}
+.tab-btn.active{background:#1565c0;color:#fff;border-color:#1565c0}
 table{width:100%;border-collapse:collapse;font-size:.8rem}
-thead tr{background:#1a6b3a;color:#fff}
+thead tr{background:#1565c0;color:#fff}
 th{padding:7px 6px;text-align:left;font-size:11px;font-weight:600;white-space:nowrap}
-tbody tr{border-bottom:1px solid #c8dace}
-tbody tr:nth-child(even){background:#f7fbf8}
-tbody tr:hover{background:#e8f5ec}
+tbody tr{border-bottom:1px solid #c5d8f0}
+tbody tr:nth-child(even){background:#f8faff}
+tbody tr:hover{background:#f0f4ff}
 td{padding:6px}
-.cod{font-weight:700;color:#1a6b3a}
-.mut{color:#6a8a72;font-size:11px}
-.sub-val{font-weight:600;color:#1a6b3a}
+.cod{font-weight:700;color:#1565c0}
+.mut{color:#5a7090;font-size:11px}
+.sub-val{font-weight:600;color:#1565c0}
 input[type=number].barras-inp{width:50px;text-align:center;padding:3px 4px}
 .del-btn{background:none;border:1px solid #e0aba0;border-radius:4px;color:#c0392b;font-size:11px;padding:2px 5px;cursor:pointer}
 .status{margin-top:10px;padding:9px 13px;border-radius:6px;font-size:.85rem}
-.status.ok{background:#e8f5ec;color:#1a6b3a;border:1px solid #b8dfc8}
+.status.ok{background:#f0f4ff;color:#1565c0;border:1px solid #b8cfe8}
 .status.err{background:#fde8e5;color:#c0392b;border:1px solid #f5c6c6}
 .status.warn{background:#fff8e1;color:#7a6000;border:1px solid #f0d060}
 .res-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin-bottom:16px}
-.res-item{background:#e8f5ec;border:1px solid #c8dace;border-radius:8px;padding:10px 12px}
-.res-item.dest{background:#1a6b3a;border-color:#1a6b3a}
-.res-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#6a8a72;margin-bottom:2px}
+.res-item{background:#f0f4ff;border:1px solid #c5d8f0;border-radius:8px;padding:10px 12px}
+.res-item.dest{background:#1565c0;border-color:#1565c0}
+.res-label{font-size:10px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:#5a7090;margin-bottom:2px}
 .res-item.dest .res-label{color:rgba(255,255,255,.6)}
-.res-val{font-weight:700;font-size:1.2rem;color:#1a6b3a}
+.res-val{font-weight:700;font-size:1.2rem;color:#1565c0}
 .res-item.dest .res-val{color:#fff;font-size:1.5rem}
-.iva-btn{display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:600;border:1px solid #c8dace;background:#e8f5ec;color:#1a6b3a;user-select:none;transition:.2s}
-.iva-btn.on{background:#1a6b3a;color:#fff;border-color:#1a6b3a}
-.iva-dot{width:12px;height:12px;border-radius:50%;background:#c8dace;flex-shrink:0}
+.iva-btn{display:flex;align-items:center;gap:7px;padding:7px 12px;border-radius:6px;cursor:pointer;font-size:.85rem;font-weight:600;border:1px solid #c5d8f0;background:#f0f4ff;color:#1565c0;user-select:none;transition:.2s}
+.iva-btn.on{background:#1565c0;color:#fff;border-color:#1565c0}
+.iva-dot{width:12px;height:12px;border-radius:50%;background:#c5d8f0;flex-shrink:0}
 .iva-btn.on .iva-dot{background:rgba(255,255,255,.6)}
-.upload-area{border:2px dashed #c8dace;border-radius:8px;padding:20px;text-align:center;background:#e8f5ec;cursor:pointer;margin-bottom:8px;transition:.2s}
-.upload-area:hover{border-color:#1a6b3a;background:#d0ead8}
+.upload-area{border:2px dashed #c5d8f0;border-radius:8px;padding:20px;text-align:center;background:#f0f4ff;cursor:pointer;margin-bottom:8px;transition:.2s}
+.upload-area:hover{border-color:#1565c0;background:#d0e4f8}
 .upload-icon{font-size:2rem;margin-bottom:4px}
-.upload-name{font-weight:600;color:#1a6b3a;font-size:.9rem}
-.upload-hint{font-size:11px;color:#6a8a72;margin-top:3px}
+.upload-name{font-weight:600;color:#1565c0;font-size:.9rem}
+.upload-hint{font-size:11px;color:#5a7090;margin-top:3px}
 .pend-table{overflow-x:auto;margin-bottom:10px}
-.info-box{background:#e8f5ec;border:1px solid #c8dace;border-radius:6px;padding:10px 12px;font-size:12px;color:#6a8a72;line-height:1.5;margin-bottom:12px}
+.info-box{background:#f0f4ff;border:1px solid #c5d8f0;border-radius:6px;padding:10px 12px;font-size:12px;color:#5a7090;line-height:1.5;margin-bottom:12px}
 /* Inputs editables en tabla preview */
-.edit-inp{border:1px solid #c8dace;border-radius:4px;padding:3px 5px;font-size:.78rem;background:#fff;width:100%;min-width:60px}
-.edit-inp:focus{border-color:#1a6b3a;outline:none}
-.edit-sel{border:1px solid #c8dace;border-radius:4px;padding:3px 4px;font-size:.75rem;background:#fff;width:100%}
+.edit-inp{border:1px solid #c5d8f0;border-radius:4px;padding:3px 5px;font-size:.78rem;background:#fff;width:100%;min-width:60px}
+.edit-inp:focus{border-color:#1565c0;outline:none}
+.edit-sel{border:1px solid #c5d8f0;border-radius:4px;padding:3px 4px;font-size:.75rem;background:#fff;width:100%}
 @media(max-width:600px){
   .app{padding:0 6px}
   .card-b{padding:10px}
@@ -108,11 +107,12 @@ input[type=number].barras-inp{width:50px;text-align:center;padding:3px 4px}
   <div class="card-h">⚙ Opciones</div>
   <div class="card-b row">
     <div>
-      <label style="display:block;margin-bottom:4px">IVA 10,5%</label>
-      <div class="iva-btn" id="iva-btn" onclick="toggleIVA()">
-        <div class="iva-dot"></div>
-        <span id="iva-txt">Sin IVA (M1/M2)</span>
+      <label style="display:block;margin-bottom:6px">Tipo de factura</label>
+      <div style="display:flex;gap:6px">
+        <button class="tab-btn active" id="btn-siniva" onclick="setFactura('siniva')">📄 Sin IVA (M1/M2)</button>
+        <button class="tab-btn" id="btn-coniva" onclick="setFactura('coniva')">🧾 Con IVA (21%)</button>
       </div>
+      <div id="iva-hint" style="font-size:11px;color:#5a7090;margin-top:5px">Precio M1/M2 directo, sin desglose de impuesto.</div>
     </div>
     <div class="fg" style="width:90px">
       <label>Margen %</label>
@@ -218,7 +218,7 @@ input[type=number].barras-inp{width:50px;text-align:center;padding:3px 4px}
         </div>
         <input type="file" id="ia-file" accept="image/jpeg,image/png,image/gif,image/webp,application/pdf" style="display:none" onchange="archivoSeleccionado(this)">
         <div id="file-info" style="display:none;margin-bottom:8px">
-          <span id="file-nombre" style="font-size:12px;color:#1a6b3a;font-weight:600"></span>
+          <span id="file-nombre" style="font-size:12px;color:#1565c0;font-weight:600"></span>
           <button class="btn-g btn" style="margin-left:8px;font-size:11px;padding:2px 8px" onclick="quitarArchivo()">✕ Quitar</button>
         </div>
         <button class="btn" id="btn-foto" onclick="analizarFoto()">⚡ Analizar y cargar</button>
@@ -228,8 +228,8 @@ input[type=number].barras-inp{width:50px;text-align:center;padding:3px 4px}
 
       <!-- PREVIEW EDITABLE -->
       <div id="ia-preview" style="display:none;margin-top:14px">
-        <div style="font-weight:700;color:#1a6b3a;font-size:.85rem;margin-bottom:4px;letter-spacing:.5px;text-transform:uppercase">Perfiles reconocidos — editá si es necesario y confirmá</div>
-        <div style="font-size:11px;color:#6a8a72;margin-bottom:8px">✏ Podés corregir código, línea y barras directamente en la tabla. Usá ✕ para eliminar filas incorrectas.</div>
+        <div style="font-weight:700;color:#1565c0;font-size:.85rem;margin-bottom:4px;letter-spacing:.5px;text-transform:uppercase">Perfiles reconocidos — editá si es necesario y confirmá</div>
+        <div style="font-size:11px;color:#5a7090;margin-bottom:8px">✏ Podés corregir código, línea y barras directamente en la tabla. Usá ✕ para eliminar filas incorrectas.</div>
         <div class="pend-table">
           <table id="preview-table">
             <thead>
@@ -247,8 +247,8 @@ input[type=number].barras-inp{width:50px;text-align:center;padding:3px 4px}
         </div>
 
         <!-- AGREGAR FILA MANUAL EN PREVIEW -->
-        <div style="background:#f0f4f1;border:1px solid #c8dace;border-radius:6px;padding:10px;margin-bottom:10px">
-          <div style="font-size:11px;font-weight:700;color:#6a8a72;margin-bottom:6px;letter-spacing:.5px">➕ AGREGAR PERFIL QUE FALTÓ</div>
+        <div style="background:#f0f4ff;border:1px solid #c5d8f0;border-radius:6px;padding:10px;margin-bottom:10px">
+          <div style="font-size:11px;font-weight:700;color:#5a7090;margin-bottom:6px;letter-spacing:.5px">➕ AGREGAR PERFIL QUE FALTÓ</div>
           <div class="row">
             <div class="fg" style="min-width:100px">
               <label>Línea</label>
@@ -287,11 +287,11 @@ input[type=number].barras-inp{width:50px;text-align:center;padding:3px 4px}
   <div style="overflow-x:auto">
     <table id="tabla-perfiles">
       <thead>
-        <tr><th>Línea</th><th>Código</th><th>Descripción</th><th>Color</th><th>kg/m</th><th>Barras</th><th>m/b</th><th>kg tot</th><th>$/kg</th><th>Subtotal</th><th></th></tr>
+        <tr><th>Línea</th><th>Código</th><th>Descripción</th><th>Color</th><th>kg/m ✏</th><th>Barras</th><th>m/b</th><th>kg tot</th><th>$/kg ✏</th><th>Subtotal</th><th></th></tr>
       </thead>
       <tbody id="tbody"></tbody>
     </table>
-    <div id="tabla-vacia" style="padding:24px;text-align:center;color:#6a8a72;font-style:italic;font-size:.88rem">Agregá perfiles usando el panel de arriba</div>
+    <div id="tabla-vacia" style="padding:24px;text-align:center;color:#5a7090;font-style:italic;font-size:.88rem">Agregá perfiles usando el panel de arriba</div>
   </div>
 </div>
 
@@ -303,12 +303,13 @@ input[type=number].barras-inp{width:50px;text-align:center;padding:3px 4px}
     <div style="overflow-x:auto;margin-bottom:14px">
       <table id="tabla-desglose">
         <thead>
-          <tr style="background:#0d1f14"><th>Línea</th><th>Código</th><th>Descripción</th><th>Color</th><th>Barras</th><th>kg total</th><th>$/kg</th><th>Subtotal</th></tr>
+          <tr style="background:#0a1628"><th>Línea</th><th>Código</th><th>Descripción</th><th>Color</th><th>Barras</th><th>kg total</th><th>$/kg</th><th>Subtotal</th></tr>
         </thead>
         <tbody id="desglose-body"></tbody>
       </table>
     </div>
-    <div style="display:flex;gap:8px">
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button class="btn" onclick="exportarPDF()">📄 Exportar PDF</button>
       <button class="btn" onclick="window.print()">🖨 Imprimir</button>
       <button class="btn btn-g" onclick="limpiar()">🗑 Limpiar todo</button>
     </div>
@@ -331,7 +332,7 @@ const CS=[['001','Natural'],['002','Blanco'],['003','Negro'],['004','Bronce'],['
 const CE=[['013','Natural'],['014','Blanco'],['015','Negro'],['016','Bronce'],['017','Madera'],['018','Anod.Natural'],['019','Anod.Bronce Cl.'],['020','Anod.Bronce Osc.'],['021','Anod.Negro'],['022','Anod.Peltre'],['023','Anod.Champagne'],['024','Especial']];
 const CP=[['blanco','Blanco'],['negro','Negro']];
 const gc=l=>l==='premium'?CP:l==='estructural'?CE:CS;
-const gp=(l,ls,c)=>{if(l==='premium')return PP;const t=l==='estructural'?(ls==='l1'?L1E:LME):(ls==='l1'?L1:LM);return t[c]||0;};
+const gp=(l,ls,c)=>{if(l==='premium')return PP;const t=l==='estructural'?(ls==='l1'?L1E:LME):(ls==='l1'?L1:LM);return t[c]||null;};
 const fm=n=>Math.round(n).toLocaleString('es-AR');
 
 const CH={'17':[1.1,'Marco alto tránsito'],'22':[0.359,'Tablilla unión marco 75'],'30':[0.383,'Perfil central vidrio repartido'],'31':[0.264,'Perfil lateral vidrio repartido'],'32':[0.274,'Perfil lateral 32'],'37':[0.268,'Doble contacto puerta 25mm'],'39':[0.536,'Marco puerta 36'],'40':[0.311,'Doble contacto puerta 36mm'],'44':[0.848,'Zócalo alto puerta corrediza'],'45':[0.144,'Tapa junta'],'46':[0.36,'Revestimiento acanalado'],'47':[0.86,'Revestimiento tubular'],'48':[0.355,'Marco puerta placa 45'],'53':[0.645,'Parante lateral reforzado 90°'],'54':[0.498,'Parante central reforzado'],'58':[1.141,'Marco corrediza 4 guías postigón'],'100':[0.584,'Marco corrediza liviano'],'101':[0.742,'Marco de corrediza'],'102':[0.443,'Cabezal y zócalo de hoja'],'103':[0.454,'Parante lateral hoja corrediza'],'104':[0.413,'Parante central hoja corrediza'],'105':[0.331,'Hoja mosquitero'],'107':[0.65,'Paño fijo herrero'],'108':[0.355,'Contravidrio herrero'],'161':[0.454,'Marco aireador'],'178':[0.464,'Parante postigón chico'],'185':[1.339,'Columna acople recto'],'186':[1.204,'Columna acople curvo'],'188B':[0.367,'Marco chico postigón'],'332':[0.644,'Escuadra intermedia'],'417':[0.293,'Tablilla curva postigón'],'418':[0.271,'Tablilla recta postigón'],'599':[0.605,'Travesaño mosquitero'],'691':[1.323,'Marco tres guías'],'MPR25':[0.488,'Marco postigón'],'PP25':[0.679,'Parante postigón 25'],'PP36':[1.09,'Parante puerta 36'],'TP36':[1.045,'Travesaño puerta 36'],'822':[0.429,'Batinete mosquitero'],'973':[0.483,'Marco paño fijo'],'987':[1.312,'Columna acople 45°'],'1573':[0.134,'Hoja mosquitero fijo'],'1690':[0.483,'Guía vent.corrediza escuadra'],'1920':[0.456,'Guía cortina enrollar'],'830':[0.346,'Hoja mampara baño'],'1345':[0.77,'Cabezal cubre bañera'],'1349':[0.37,'Inferior mampara'],'1350':[0.292,'Jamba cubre bañera']};
@@ -345,7 +346,7 @@ const CATS={herrero:CH,modena:CM,premium:CPR,a30:CA,estructural:CE2};
 // ESTADO
 // ============================================================
 let items=[];
-let ivaOn=false;
+let facturaMode='siniva'; // siniva | coniva
 let pendientes=[];
 let archivoData=null;
 
@@ -409,13 +410,15 @@ function setIAMode(m){
 }
 
 // ============================================================
-// IVA
+// FACTURACIÓN
 // ============================================================
-function toggleIVA(){
-  ivaOn=!ivaOn;
-  const btn=document.getElementById('iva-btn');
-  btn.className='iva-btn'+(ivaOn?' on':'');
-  document.getElementById('iva-txt').textContent=ivaOn?'Con IVA → B1/B2':'Sin IVA (M1/M2)';
+function setFactura(modo){
+  facturaMode=modo;
+  document.getElementById('btn-siniva').className='tab-btn'+(modo==='siniva'?' active':'');
+  document.getElementById('btn-coniva').className='tab-btn'+(modo==='coniva'?' active':'');
+  document.getElementById('iva-hint').textContent=modo==='siniva'
+    ?'Precio M1/M2 directo, sin desglose de impuesto.'
+    :'Precio M1/M2 + 10,5%. Se desglosa base + IVA 21%.';
   recalcular();
 }
 
@@ -617,11 +620,11 @@ function renderTabla(){
       <td class="cod">${it.codigo}</td>
       <td>${it.desc}</td>
       <td class="mut">${it.color}</td>
-      <td>${it.pesoKgm.toFixed(3)}</td>
+      <td><input type="number" class="barras-inp" style="width:58px" value="${it.pesoKgm.toFixed(3)}" step="0.001" min="0.001" onchange="cambiarPeso(${it.id},this.value)" title="Editar kg/m"></td>
       <td><input type="number" class="barras-inp" value="${it.barras}" min="1" onchange="cambiarBarras(${it.id},this.value)"></td>
       <td class="mut">${it.lb.toFixed(2)}</td>
       <td>${kg.toFixed(3)}</td>
-      <td>$ ${fm(it.precio)}</td>
+      <td><input type="number" class="barras-inp" style="width:72px" value="${it.precio}" min="0" step="1" onchange="cambiarPrecio(${it.id},this.value)" title="Editar $/kg"></td>
       <td class="sub-val">$ ${fm(s)}</td>
       <td><button class="del-btn" onclick="eliminar(${it.id})">✕</button></td>
     </tr>`;
@@ -630,6 +633,8 @@ function renderTabla(){
 
 function eliminar(id){items=items.filter(i=>i.id!==id);renderTabla();recalcular();}
 function cambiarBarras(id,v){const it=items.find(i=>i.id===id);if(it){it.barras=parseInt(v)||1;recalcular();}}
+function cambiarPeso(id,v){const it=items.find(i=>i.id===id);if(it){it.pesoKgm=parseFloat(v)||it.pesoKgm;recalcular();}}
+function cambiarPrecio(id,v){const it=items.find(i=>i.id===id);if(it){it.precio=parseFloat(v)||it.precio;recalcular();}}
 
 // ============================================================
 // RECALCULAR
@@ -640,13 +645,29 @@ function recalcular(){
   const mrg=parseFloat(document.getElementById('margen').value)||0;
   const kgT=items.reduce((s,i)=>s+i.pesoKgm*i.barras*i.lb,0);
   const sub=items.reduce((s,i)=>s+i.pesoKgm*i.barras*i.lb*i.precio,0);
-  const ivaV=ivaOn?sub*0.105:0;
-  const mrgV=(sub+ivaV)*(mrg/100);
-  const tot=sub+ivaV+mrgV;
+  // Lógica de facturación
+  // Sin IVA: precio M1/M2 directo
+  // Con IVA: precio M1/M2 × 1.105 → total con IVA incluido → desglosar base + IVA 21%
+  let precioConIva=0, baseImponible=0, ivaV=0, tot=0;
+  if(facturaMode==='coniva'){
+    precioConIva = sub * 1.105;          // M1/M2 + 10,5%
+    baseImponible = precioConIva / 1.21; // base sin IVA
+    ivaV = precioConIva - baseImponible; // IVA 21%
+    tot = precioConIva;
+  } else {
+    tot = sub; // sin IVA directo
+  }
+  const mrgV = tot * (mrg/100);
+  tot = tot + mrgV;
 
   const grid=document.getElementById('res-grid');
-  const datos=[['Peso total',kgT.toFixed(3)+' kg',false],['Subtotal','$ '+fm(sub),false]];
-  if(ivaOn)datos.push(['IVA 10,5%','$ '+fm(ivaV),false]);
+  const datos=[['Peso total',kgT.toFixed(3)+' kg',false]];
+  if(facturaMode==='coniva'){
+    datos.push(['Base imponible','$ '+fm(baseImponible),false]);
+    datos.push(['IVA 21%','$ '+fm(ivaV),false]);
+  } else {
+    datos.push(['Subtotal','$ '+fm(sub),false]);
+  }
   if(mrg>0)datos.push(['Margen '+mrg+'%','$ '+fm(mrgV),false]);
   datos.push(['TOTAL','$ '+fm(tot),true]);
   grid.innerHTML=datos.map(([l,v,d])=>`
@@ -658,7 +679,7 @@ function recalcular(){
   const dbody=document.getElementById('desglose-body');
   dbody.innerHTML=items.map((it,i)=>{
     const kg=it.pesoKgm*it.barras*it.lb,s=kg*it.precio;
-    return `<tr style="background:${i%2?'#f7fbf8':'#fff'}">
+    return `<tr style="background:${i%2?'#f8faff':'#fff'}">
       <td class="mut">${LINEAS[it.linea].n}</td>
       <td class="cod">${it.codigo}</td>
       <td>${it.desc}</td>
@@ -668,16 +689,79 @@ function recalcular(){
       <td>$ ${fm(it.precio)}</td>
       <td class="sub-val" style="text-align:right">$ ${fm(s)}</td>
     </tr>`;
-  }).join('')+`<tr style="background:#e0f0e6">
+  }).join('')+`<tr style="background:#d8eaff">
     <td colspan="4" style="font-weight:700;padding:7px 6px">TOTAL</td>
     <td style="text-align:center;font-weight:700">${items.reduce((s,i)=>s+i.barras,0)}</td>
     <td style="font-weight:700">${kgT.toFixed(3)} kg</td>
     <td></td>
-    <td style="text-align:right;font-weight:700;color:#1a6b3a;font-size:1rem">$ ${fm(tot)}</td>
+    <td style="text-align:right;font-weight:700;color:#1565c0;font-size:1rem">$ ${fm(tot)}</td>
   </tr>`;
 }
 
 function limpiar(){if(confirm('¿Limpiar todo?')){items=[];renderTabla();recalcular();}}
+
+// ============================================================
+// EXPORTAR PDF
+// ============================================================
+async function exportarPDF(){
+  if(!items.length){alert('No hay perfiles cargados.');return;}
+  const btn=document.querySelector('button[onclick="exportarPDF()"]');
+  btn.disabled=true;btn.textContent='⏳ Generando PDF...';
+  try{
+    const mrg=parseFloat(document.getElementById('margen').value)||0;
+    const kgT=items.reduce((s,i)=>s+i.pesoKgm*i.barras*i.lb,0);
+    const sub=items.reduce((s,i)=>s+i.pesoKgm*i.barras*i.lb*i.precio,0);
+    let precioConIva=0,baseImponible=0,ivaV=0,tot=0;
+    if(facturaMode==='coniva'){
+      precioConIva=sub*1.105;
+      baseImponible=precioConIva/1.21;
+      ivaV=precioConIva-baseImponible;
+      tot=precioConIva;
+    } else { tot=sub; }
+    const mrgV=tot*(mrg/100);
+    tot=tot+mrgV;
+
+    const payload={
+      cliente:{
+        nro:document.getElementById('nro').value||'001',
+        fecha:document.getElementById('fecha').value,
+        nombre:document.getElementById('nombre').value||'',
+        tel:document.getElementById('tel').value||'',
+        dir:document.getElementById('dir').value||'',
+        obs:document.getElementById('obs').value||''
+      },
+      facturaMode,
+      items:items.map(it=>({
+        linea:LINEAS[it.linea].n,
+        codigo:it.codigo,
+        desc:it.desc,
+        color:it.color,
+        pesoKgm:it.pesoKgm,
+        barras:it.barras,
+        lb:it.lb,
+        precio:it.precio,
+        kg:it.pesoKgm*it.barras*it.lb,
+        subtotal:it.pesoKgm*it.barras*it.lb*it.precio
+      })),
+      totales:{kgT,sub,precioConIva,baseImponible,ivaV,mrgV,tot,mrg,facturaMode}
+    };
+
+    const r=await fetch('/api/generar-pdf',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(payload)
+    });
+    if(!r.ok)throw new Error('Error del servidor');
+    const blob=await r.blob();
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;
+    a.download=`presupuesto-${payload.cliente.nro}-${payload.cliente.fecha}.pdf`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }catch(e){alert('Error al generar PDF: '+e.message);}
+  btn.disabled=false;btn.textContent='📄 Exportar PDF';
+}
 
 // Init tabla
 document.getElementById('tabla-perfiles').style.display='none';
